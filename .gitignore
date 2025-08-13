@@ -25,3 +25,9 @@ ollama
 **/.next/
 **/out/
 goldenverba/server/frontend/out/
+# Dev tooling
+/package.json
+/package-lock.json
+/node_modules/
+
+
