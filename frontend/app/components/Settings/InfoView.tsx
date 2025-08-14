@@ -8,6 +8,7 @@ import { deleteAllDocuments, fetchMeta } from "@/app/api";
 import UserModalComponent from "../Navigation/UserModal";
 
 import VerbaButton from "../Navigation/VerbaButton";
+import { useTranslation } from "@/context/TranslationContext";
 
 interface InfoViewProps {
   credentials: Credentials;
@@ -25,6 +26,8 @@ const InfoView: React.FC<InfoViewProps> = ({
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [collectionPayload, setCollectionPayload] =
     useState<CollectionPayload | null>(null);
+
+  const { t } = useTranslation();
 
   const fetchMetadata = async () => {
     setIsLoading(true);
@@ -47,40 +50,70 @@ const InfoView: React.FC<InfoViewProps> = ({
   const resetDocuments = async () => {
     const response = await deleteAllDocuments("DOCUMENTS", credentials);
     if (response) {
-      addStatusMessage("All documents reset", "SUCCESS");
+      addStatusMessage(
+        t("settings.status.reset_documents", "All documents reset"),
+        "SUCCESS"
+      );
       fetchMetadata();
     } else {
-      addStatusMessage("Failed to reset documents", "ERROR");
+      addStatusMessage(
+        t(
+          "settings.status.reset_documents_failed",
+          "Failed to reset documents"
+        ),
+        "ERROR"
+      );
     }
   };
 
   const resetVerba = async () => {
     const response = await deleteAllDocuments("ALL", credentials);
     if (response) {
-      addStatusMessage("Verba reset", "SUCCESS");
+      addStatusMessage(
+        t("settings.status.reset_verba", "Verba reset"),
+        "SUCCESS"
+      );
       fetchMetadata();
     } else {
-      addStatusMessage("Failed to reset Verba", "ERROR");
+      addStatusMessage(
+        t("settings.status.reset_verba_failed", "Failed to reset Verba"),
+        "ERROR"
+      );
     }
   };
 
   const resetConfig = async () => {
     const response = await deleteAllDocuments("CONFIG", credentials);
     if (response) {
-      addStatusMessage("Config reset", "SUCCESS");
+      addStatusMessage(
+        t("settings.status.reset_config", "Config reset"),
+        "SUCCESS"
+      );
       fetchMetadata();
     } else {
-      addStatusMessage("Failed to reset config", "ERROR");
+      addStatusMessage(
+        t("settings.status.reset_config_failed", "Failed to reset config"),
+        "ERROR"
+      );
     }
   };
 
   const resetSuggestions = async () => {
     const response = await deleteAllDocuments("SUGGESTIONS", credentials);
     if (response) {
-      addStatusMessage("Suggestions reset", "SUCCESS");
+      addStatusMessage(
+        t("settings.status.reset_suggestions", "Suggestions reset"),
+        "SUCCESS"
+      );
       fetchMetadata();
     } else {
-      addStatusMessage("Failed to reset suggestions", "ERROR");
+      addStatusMessage(
+        t(
+          "settings.status.reset_suggestions_failed",
+          "Failed to reset suggestions"
+        ),
+        "ERROR"
+      );
     }
   };
 
@@ -94,9 +127,11 @@ const InfoView: React.FC<InfoViewProps> = ({
   return (
     <div className="flex flex-col w-full h-full p-4">
       <div className="flex justify-between items-center mb-4">
-        <p className="text-2xl font-bold">Admin Panel</p>
+        <p className="text-2xl font-bold">
+          {t("settings.admin_panel", "Admin Panel")}
+        </p>
         <VerbaButton
-          title="Refresh"
+          title={t("common.refresh", "Refresh")}
           loading={isLoading}
           onClick={fetchMetadata}
           className="max-w-min"
@@ -105,50 +140,54 @@ const InfoView: React.FC<InfoViewProps> = ({
       </div>
       <div className="flex-grow overflow-y-auto">
         <div className="gap-4 flex flex-col p-4 text-text-verba">
-          <p className="font-bold text-lg">Resetting Verba</p>
+          <p className="font-bold text-lg">
+            {t("settings.section.resetting_verba", "Resetting Verba")}
+          </p>
           <div className="flex flex-wrap gap-2 justify-between">
             <div className="flex flex-wrap gap-2">
               <VerbaButton
-                title="Clear Documents"
+                title={t("settings.clear_documents", "Clear Documents")}
                 onClick={() => openModal("reset-documents")}
                 Icon={IoDocumentSharp}
               />
               <VerbaButton
-                title="Clear Config"
+                title={t("settings.clear_config", "Clear Config")}
                 onClick={() => openModal("reset-configs")}
                 Icon={FaWrench}
               />
               <VerbaButton
-                title="Clear Everything"
+                title={t("settings.clear_everything", "Clear Everything")}
                 onClick={() => openModal("reset-verba")}
                 Icon={IoTrash}
               />
               <VerbaButton
-                title="Clear Suggestions"
+                title={t("settings.clear_suggestions", "Clear Suggestions")}
                 onClick={() => openModal("reset-suggestions")}
                 Icon={IoTrash}
               />
             </div>
           </div>
-          <p className="font-bold text-lg">Weaviate Information</p>
+          <p className="font-bold text-lg">
+            {t("settings.section.weaviate_information", "Weaviate Information")}
+          </p>
 
           <div className="flex flex-col border-2 gap-2 border-bg-verba shadow-sm p-4 rounded-lg">
             <p className="text-sm lg:text-base font-semibold text-text-alt-verba">
-              Connected to
+              {t("settings.connected_to", "Connected to")}
             </p>
             <p className="   text-text-verba">{credentials.url}</p>
           </div>
 
           <div className="flex flex-col border-2 gap-2 border-bg-verba shadow-sm p-4 rounded-lg">
             <p className="text-sm lg:text-base font-semibold text-text-alt-verba">
-              Deployment
+              {t("settings.deployment", "Deployment")}
             </p>
             <p className=" text-text-verba">{credentials.deployment}</p>
           </div>
 
           <div className="flex flex-col border-2 gap-2 border-secondary-verba shadow-sm p-4 rounded-lg">
             <p className="text-sm lg:text-base font-semibold text-text-alt-verba">
-              Version
+              {t("settings.version", "Version")}
             </p>
             {nodePayload ? (
               <p className="text-text-verba">{nodePayload.weaviate_version}</p>
@@ -160,7 +199,7 @@ const InfoView: React.FC<InfoViewProps> = ({
           <div className="flex flex-col border-2 border-bg-verba shadow-sm p-4 rounded-lg">
             <div className="flex gap-2 items-center">
               <p className="text-text-alt-verba text-sm lg:text-base font-semibold">
-                Nodes
+                {t("settings.nodes", "Nodes")}
               </p>
               {nodePayload ? (
                 <p className="text-text-alt-verba text-sm lg:text-base font-semibold">
@@ -180,7 +219,8 @@ const InfoView: React.FC<InfoViewProps> = ({
                   >
                     <span className="w-64 truncate">{node.name}</span>
                     <span>
-                      ({node.status} - {node.shards} shards)
+                      ({t(node.status, node.status)} - {node.shards}{" "}
+                      {t("settings.shards", "shards")})
                     </span>
                   </li>
                 ))}
@@ -193,7 +233,7 @@ const InfoView: React.FC<InfoViewProps> = ({
           <div className="flex flex-col border-2 border-bg-verba shadow-sm p-4 rounded-lg">
             <div className="flex gap-2 items-center">
               <p className="text-text-alt-verba text-sm lg:text-base font-semibold">
-                Collections
+                {t("settings.collections", "Collections")}
               </p>
               {collectionPayload ? (
                 <p className="text-text-alt-verba text-sm lg:text-base font-semibold">
@@ -212,7 +252,9 @@ const InfoView: React.FC<InfoViewProps> = ({
                     className="text-sm text-text-verba flex justify-between"
                   >
                     <span className="w-128 truncate">{collection.name}</span>
-                    <span>{collection.count} objects</span>
+                    <span>
+                      {collection.count} {t("settings.objects", "objects")}
+                    </span>
                   </li>
                 ))}
               </ul>
@@ -224,31 +266,43 @@ const InfoView: React.FC<InfoViewProps> = ({
       </div>
       <UserModalComponent
         modal_id="reset-documents"
-        title="Reset Documents"
-        text="Are you sure you want to reset all documents? This will clear all documents and chunks from Verba."
+        title={t("settings.modal.reset_documents.title", "Reset Documents")}
+        text={t(
+          "settings.modal.reset_documents.text",
+          "Are you sure you want to reset all documents? This will clear all documents and chunks from Verba."
+        )}
         triggerAccept={resetDocuments}
-        triggerString="Reset"
+        triggerString={t("common.reset", "Reset")}
       />
       <UserModalComponent
         modal_id="reset-configs"
-        title="Reset Config"
-        text="Are you sure you want to reset the config?"
+        title={t("settings.modal.reset_config.title", "Reset Config")}
+        text={t(
+          "settings.modal.reset_config.text",
+          "Are you sure you want to reset the config?"
+        )}
         triggerAccept={resetConfig}
-        triggerString="Reset"
+        triggerString={t("common.reset", "Reset")}
       />
       <UserModalComponent
         modal_id="reset-verba"
-        title="Reset Verba"
-        text="Are you sure you want to reset Verba? This will delete all collections related to Verba."
+        title={t("settings.modal.reset_verba.title", "Reset Verba")}
+        text={t(
+          "settings.modal.reset_verba.text",
+          "Are you sure you want to reset Verba? This will delete all collections related to Verba."
+        )}
         triggerAccept={resetVerba}
-        triggerString="Reset"
+        triggerString={t("common.reset", "Reset")}
       />
       <UserModalComponent
         modal_id="reset-suggestions"
-        title="Reset Suggestions"
-        text="Are you sure you want to reset all autocomplete suggestions?"
+        title={t("settings.modal.reset_suggestions.title", "Reset Suggestions")}
+        text={t(
+          "settings.modal.reset_suggestions.text",
+          "Are you sure you want to reset all autocomplete suggestions?"
+        )}
         triggerAccept={resetSuggestions}
-        triggerString="Reset"
+        triggerString={t("common.reset", "Reset")}
       />
     </div>
   );

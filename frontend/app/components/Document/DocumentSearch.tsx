@@ -13,6 +13,7 @@ import InfoComponent from "../Navigation/InfoComponent";
 import UserModalComponent from "../Navigation/UserModal";
 import VerbaButton from "../Navigation/VerbaButton";
 import { IoMdAddCircle } from "react-icons/io";
+import { useTranslation } from "@/context/TranslationContext";
 
 interface DocumentSearchComponentProps {
   selectedDocument: string | null;
@@ -32,6 +33,8 @@ const DocumentSearch: React.FC<DocumentSearchComponentProps> = ({
   addStatusMessage,
   credentials,
 }) => {
+  const { t } = useTranslation();
+
   const [userInput, setUserInput] = useState("");
   const [page, setPage] = useState(1);
 
@@ -130,7 +133,10 @@ const DocumentSearch: React.FC<DocumentSearchComponentProps> = ({
       return;
     }
     const response = await deleteDocument(d, credentials);
-    addStatusMessage("Deleted document", "WARNING");
+    addStatusMessage(
+      t("document.status.deleted_document", "Deleted document"),
+      "WARNING"
+    );
     if (response) {
       if (d == selectedDocument) {
         setSelectedDocument(null);
@@ -160,8 +166,11 @@ const DocumentSearch: React.FC<DocumentSearchComponentProps> = ({
       <div className="bg-bg-alt-verba rounded-2xl flex gap-2 p-3 items-center justify-between h-min w-full">
         <div className="hidden lg:flex gap-2 justify-start w-[8vw]">
           <InfoComponent
-            tooltip_text="Search and inspect different documents imported into Verba"
-            display_text="Search"
+            tooltip_text={t(
+              "document.search.tooltip",
+              "Search and inspect different documents imported into Verba"
+            )}
+            display_text={t("document.search.title", "Search")}
           />
         </div>
 
@@ -170,7 +179,11 @@ const DocumentSearch: React.FC<DocumentSearchComponentProps> = ({
             type="text"
             className="grow w-full"
             onKeyDown={handleKeyDown}
-            placeholder={`Search for documents (${totalDocuments})`}
+            placeholder={t(
+              "document.search.placeholder",
+              "Search for documents ({{count}})",
+              { count: totalDocuments }
+            )}
             value={userInput}
             onChange={(e) => {
               setUserInput(e.target.value);
@@ -192,7 +205,7 @@ const DocumentSearch: React.FC<DocumentSearchComponentProps> = ({
           <div className="dropdown dropdown-hover">
             <label tabIndex={0}>
               <VerbaButton
-                title="Label"
+                title={t("common.label", "Label")}
                 className="btn-sm min-w-min"
                 icon_size={12}
                 text_class_name="text-xs"
@@ -221,7 +234,7 @@ const DocumentSearch: React.FC<DocumentSearchComponentProps> = ({
                       if (dropdown) dropdown.blur();
                     }}
                   >
-                    {label}
+                    {t(label, label)}
                   </a>
                 </li>
               ))}
@@ -230,7 +243,7 @@ const DocumentSearch: React.FC<DocumentSearchComponentProps> = ({
           <div className="flex flex-wrap gap-2">
             {selectedLabels.map((label, index) => (
               <VerbaButton
-                title={label}
+                title={t(label, label)}
                 key={"FilterDocumentLabel" + index}
                 Icon={MdCancel}
                 className="btn-sm min-w-min max-w-[200px]"
@@ -285,9 +298,16 @@ const DocumentSearch: React.FC<DocumentSearchComponentProps> = ({
                 </div>
                 <UserModalComponent
                   modal_id={"remove_document" + document.uuid}
-                  title={"Remove Document"}
-                  text={"Do you want to remove " + document.title + "?"}
-                  triggerString="Delete"
+                  title={t(
+                    "document.search.remove_document",
+                    "Remove Document"
+                  )}
+                  text={t(
+                    "document.search.confirm_remove",
+                    "Do you want to remove {{title}}?",
+                    { title: document.title }
+                  )}
+                  triggerString={t("common.delete", "Delete")}
                   triggerValue={document.uuid}
                   triggerAccept={handleDeleteDocument}
                 />
@@ -300,17 +320,19 @@ const DocumentSearch: React.FC<DocumentSearchComponentProps> = ({
         <div className="join justify-center items-center text-text-verba">
           <div className="flex justify-center items-center gap-2 bg-bg-alt-verba">
             <VerbaButton
-              title={"Previous Page"}
+              title={t("document.button.previous_page", "Previous Page")}
               onClick={previousPage}
               className="btn-sm min-w-min max-w-[200px]"
               text_class_name="text-xs"
               Icon={FaArrowAltCircleLeft}
             />
             <div className="flex items-center">
-              <p className="text-xs text-text-verba">Page {page}</p>
+              <p className="text-xs text-text-verba">
+                {t("document.page_n", "Page {{n}}", { n: page })}
+              </p>
             </div>
             <VerbaButton
-              title={"Next Page"}
+              title={t("document.button.next_page", "Next Page")}
               onClick={nextPage}
               className="btn-sm min-w-min max-w-[200px]"
               text_class_name="text-xs"

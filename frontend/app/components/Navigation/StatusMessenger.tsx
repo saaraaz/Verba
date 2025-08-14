@@ -8,6 +8,7 @@ import { FaWandMagicSparkles } from "react-icons/fa6";
 import { IoWarning } from "react-icons/io5";
 import { BiSolidMessageAltDetail } from "react-icons/bi";
 import { BiSolidErrorCircle } from "react-icons/bi";
+import { useTranslation } from "@/context/TranslationContext";
 
 interface StatusMessengerProps {
   status_messages: StatusMessage[];
@@ -19,6 +20,7 @@ const StatusMessengerComponent: React.FC<StatusMessengerProps> = ({
   set_status_messages,
 }) => {
   const [messages, setMessages] = useState<StatusMessage[]>([]);
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (status_messages.length > 0) {
@@ -75,6 +77,21 @@ const StatusMessengerComponent: React.FC<StatusMessengerProps> = ({
     }
   };
 
+  const labelForType = (type: string) => {
+    switch (type) {
+      case "INFO":
+        return t("navigation.status.info", "Info");
+      case "WARNING":
+        return t("navigation.status.warning", "Warning");
+      case "SUCCESS":
+        return t("navigation.status.success", "Success");
+      case "ERROR":
+        return t("navigation.status.error", "Error");
+      default:
+        return t("navigation.status.info", "Info");
+    }
+  };
+
   return (
     <div className="fixed bottom-4 right-4 space-y-2 z-50">
       <AnimatePresence>
@@ -82,7 +99,7 @@ const StatusMessengerComponent: React.FC<StatusMessengerProps> = ({
           .filter((message) => {
             const messageTime = new Date(message.timestamp).getTime();
             const currentTime = new Date().getTime();
-            return currentTime - messageTime < 5000; // 5 seconds in milliseconds
+            return currentTime - messageTime < 5000;
           })
           .map((message, index) => (
             <motion.div
@@ -95,9 +112,13 @@ const StatusMessengerComponent: React.FC<StatusMessengerProps> = ({
               <div className="flex flex-col gap-2">
                 <div className="flex flex-row gap-2 items-center">
                   {getMessageIcon(message.type)}
-                  <p className="text-xs font-bold">{message.type}</p>
+                  <p className="text-xs font-bold">
+                    {labelForType(message.type)}
+                  </p>
                 </div>
-                <p className="text-base">{message.message}</p>
+                <p className="text-base">
+                  {t(message.message, message.message)}
+                </p>
               </div>
             </motion.div>
           ))}

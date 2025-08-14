@@ -27,6 +27,7 @@ import {
 } from "@/app/types";
 
 import { colors } from "./util";
+import { useTranslation } from "@/context/TranslationContext";
 
 extend({ OrbitControls: OrbitControls });
 
@@ -169,6 +170,8 @@ const VectorView: React.FC<VectorViewProps> = ({
   production,
   chunkScores,
 }) => {
+  const { t } = useTranslation();
+
   const refs = useRef<(THREE.Mesh | null)[]>([]);
   const [isFetching, setIsFetching] = useState(false);
   const [vectors, setVectors] = useState<VectorGroup[]>([]);
@@ -322,7 +325,7 @@ const VectorView: React.FC<VectorViewProps> = ({
                 </div>
               )}
               <p className="text-text-alt-verba text-xs lg:text-sm font-bold">
-                Embedding Model:
+                {t("document.vector.embedding_model_label", "Embedding Model:")}
               </p>
               <p className="text-text-alt-verba text-xs lg:text-sm">
                 {embedder}
@@ -330,7 +333,7 @@ const VectorView: React.FC<VectorViewProps> = ({
             </div>
             <div className="flex gap-1 items-center">
               <p className="text-text-alt-verba text-xs lg:text-sm font-bold">
-                Hover:
+                {t("document.vector.hover_label", "Hover:")}
               </p>
               <p
                 className="text-xs lg:text-sm text-text-alt-verba truncate max-w-[100px] lg:max-w-[300px]"
@@ -341,7 +344,7 @@ const VectorView: React.FC<VectorViewProps> = ({
             </div>
             <div className="flex gap-1 items-center">
               <p className="text-text-alt-verba text-xs lg:text-sm font-bold">
-                Vectors:
+                {t("document.vector.vectors_label", "Vectors:")}
               </p>
               <p className="text-xs lg:text-sm text-text-alt-verba">
                 {vectors.length} x {getVectorCount()} x {currentDimensions}
@@ -354,7 +357,10 @@ const VectorView: React.FC<VectorViewProps> = ({
               {production != "Demo" && (
                 <div className="flex gap-2 items-center justify-between">
                   <p className="text-xs text-text-alt-verba">
-                    Show All Documents
+                    {t(
+                      "document.vector.show_all_documents",
+                      "Show All Documents"
+                    )}
                   </p>
                   <input
                     type="checkbox"
@@ -368,7 +374,9 @@ const VectorView: React.FC<VectorViewProps> = ({
               )}
 
               <div className="flex gap-2 items-center justify-between">
-                <p className="text-xs text-text-alt-verba">Dynamic Coloring</p>
+                <p className="text-xs text-text-alt-verba">
+                  {t("document.vector.dynamic_coloring", "Dynamic Coloring")}
+                </p>
                 <input
                   type="checkbox"
                   className="toggle"
@@ -390,7 +398,7 @@ const VectorView: React.FC<VectorViewProps> = ({
                   className="btn btn-sm bg-button-verba hover:bg-button-hover-verba text-text-verba w-full flex justify-start border-none"
                 >
                   <GoTriangleDown size={15} />
-                  <p>PCA</p>
+                  <p>{t("document.vector.pca", "PCA")}</p>
                 </button>
                 <ul
                   tabIndex={0}
@@ -399,7 +407,9 @@ const VectorView: React.FC<VectorViewProps> = ({
               </div>
               {/* Zoom */}
               <div className="flex items-center gap-2 w-full">
-                <p className="text-text-alt-verba text-sm">Zoom</p>
+                <p className="text-text-alt-verba text-sm">
+                  {t("document.vector.zoom", "Zoom")}
+                </p>
                 <input
                   onChange={(e) => {
                     setViewMultiplication(Number(e.target.value));
@@ -473,7 +483,9 @@ const VectorView: React.FC<VectorViewProps> = ({
           {chunk && (
             <div className="flex flex-col p-3 gap-2 w-full">
               <p className="text-text-alt-verba fond-bold">
-                Chunk {chunk.chunk_id}
+                {t("document.chunk.label", "Chunk {{id}}", {
+                  id: chunk.chunk_id,
+                })}
               </p>
               <p className="text-text-alt-verba text-sm">{chunk.content}</p>
             </div>

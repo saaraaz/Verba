@@ -26,6 +26,7 @@ import {
 import VerbaButton from "../Navigation/VerbaButton";
 
 import { fetchSelectedDocument } from "@/app/api";
+import { useTranslation } from "@/context/TranslationContext";
 
 interface DocumentExplorerProps {
   selectedDocument: string | null;
@@ -53,6 +54,8 @@ const DocumentExplorer: React.FC<DocumentExplorerProps> = ({
   setDocumentFilter,
   addStatusMessage,
 }) => {
+  const { t } = useTranslation();
+
   const [selectedSetting, setSelectedSetting] = useState<
     "Content" | "Chunks" | "Metadata" | "Config" | "Vector Space" | "Graph"
   >("Content");
@@ -109,13 +112,20 @@ const DocumentExplorer: React.FC<DocumentExplorerProps> = ({
       <div className="bg-bg-alt-verba rounded-2xl flex gap-2 p-3 items-center justify-end lg:justify-between h-min w-full">
         <div className="hidden lg:flex gap-2 justify-start ">
           <InfoComponent
-            tooltip_text="Inspect your all information about your document, such as chunks, metadata and more."
-            display_text={document ? document.title : "Loading..."}
+            tooltip_text={t(
+              "document.explorer.tooltip",
+              "Inspect all information about your document, such as chunks, metadata, and more."
+            )}
+            display_text={
+              document
+                ? t(document.title, document.title)
+                : t("common.loading", "Loading...")
+            }
           />
         </div>
         <div className="flex gap-3 justify-end">
           <VerbaButton
-            title="Content"
+            title={t("document.explorer.content", "Content")}
             Icon={MdContentPaste}
             onClick={() => setSelectedSetting("Content")}
             selected={selectedSetting === "Content"}
@@ -123,7 +133,7 @@ const DocumentExplorer: React.FC<DocumentExplorerProps> = ({
           />
 
           <VerbaButton
-            title="Chunks"
+            title={t("document.explorer.chunks", "Chunks")}
             Icon={MdContentCopy}
             onClick={() => setSelectedSetting("Chunks")}
             selected={selectedSetting === "Chunks"}
@@ -131,7 +141,7 @@ const DocumentExplorer: React.FC<DocumentExplorerProps> = ({
           />
 
           <VerbaButton
-            title="Vector"
+            title={t("document.explorer.vector", "Vector")}
             Icon={TbVectorTriangle}
             onClick={() => setSelectedSetting("Vector Space")}
             selected={selectedSetting === "Vector Space"}
@@ -191,7 +201,7 @@ const DocumentExplorer: React.FC<DocumentExplorerProps> = ({
             (filter) => filter.uuid === selectedDocument
           ) && (
             <VerbaButton
-              title="Delete from Chat"
+              title={t("document.button.delete_from_chat", "Delete from Chat")}
               Icon={MdCancel}
               selected={true}
               selected_color="bg-warning-verba"
@@ -199,21 +209,33 @@ const DocumentExplorer: React.FC<DocumentExplorerProps> = ({
                 setDocumentFilter(
                   documentFilter.filter((f) => f.uuid !== selectedDocument)
                 );
-                addStatusMessage("Removed document from Chat", "INFO");
+                addStatusMessage(
+                  t(
+                    "chat.status.removed_document_from_chat",
+                    "Removed document from Chat"
+                  ),
+                  "INFO"
+                );
               }}
             />
           )}
           {!documentFilter.some((filter) => filter.uuid === selectedDocument) &&
             document && (
               <VerbaButton
-                title="Add to Chat"
+                title={t("document.button.add_to_chat", "Add to Chat")}
                 Icon={IoMdAddCircle}
                 onClick={() => {
                   setDocumentFilter([
                     ...documentFilter,
                     { uuid: selectedDocument, title: document.title },
                   ]);
-                  addStatusMessage("Added document to Chat", "SUCCESS");
+                  addStatusMessage(
+                    t(
+                      "chat.status.added_document_to_chat",
+                      "Added document to Chat"
+                    ),
+                    "SUCCESS"
+                  );
                 }}
               />
             )}
@@ -221,7 +243,7 @@ const DocumentExplorer: React.FC<DocumentExplorerProps> = ({
         <div className="flex gap-3">
           {selectedDocument && document && document.source && (
             <VerbaButton
-              title="Go To Source"
+              title={t("document.button.go_to_source", "Go To Source")}
               Icon={FaExternalLinkAlt}
               onClick={() => {
                 handleSourceClick(document.source);
@@ -229,7 +251,7 @@ const DocumentExplorer: React.FC<DocumentExplorerProps> = ({
             />
           )}
           <VerbaButton
-            title="Document Info"
+            title={t("document.button.document_info", "Document Info")}
             Icon={FaInfoCircle}
             onClick={() => setSelectedSetting("Metadata")}
             selected={selectedSetting === "Metadata"}

@@ -17,6 +17,7 @@ import ComponentView from "./ComponentView";
 
 import { MdError } from "react-icons/md";
 import { FaCheckCircle } from "react-icons/fa";
+import { useTranslation } from "@/context/TranslationContext";
 
 interface BasicSettingViewProps {
   selectedFileData: string | null;
@@ -50,6 +51,8 @@ const BasicSettingView: React.FC<BasicSettingViewProps> = ({
   blocked,
   addStatusMessage,
 }) => {
+  const { t } = useTranslation();
+
   const [filename, setFilename] = useState("");
   const [source, setSource] = useState("");
   const [metadata, setMetadata] = useState("");
@@ -187,7 +190,9 @@ const BasicSettingView: React.FC<BasicSettingViewProps> = ({
     return (
       <div className="flex flex-col justify-start gap-3 rounded-2xl p-1 w-full ">
         {selectedFileData && fileMap[selectedFileData].status != "READY" && (
-          <div className="divider  text-text-alt-verba">Import Status</div>
+          <div className="divider  text-text-alt-verba">
+            {t("ingestion.import_status", "Import Status")}
+          </div>
         )}
 
         <div className="flex flex-col gap-3 text-text-verba">
@@ -200,7 +205,10 @@ const BasicSettingView: React.FC<BasicSettingViewProps> = ({
                       <FaCheckCircle size={15} />
                     )}
                     {statusReport.status === "ERROR" && <MdError size={15} />}
-                    {statusTextMap[statusReport.status]}
+                    {t(
+                      statusTextMap[statusReport.status],
+                      statusTextMap[statusReport.status]
+                    )}
                   </p>
                   <label
                     className={`input flex items-center gap-2 w-full ${statusColorMap[statusReport.status]} bg-bg-verba`}
@@ -234,11 +242,13 @@ const BasicSettingView: React.FC<BasicSettingViewProps> = ({
           blocked={fileMap[selectedFileData].block}
         />
 
-        <div className="divider text-text-alt-verba">File Settings</div>
+        <div className="divider text-text-alt-verba">
+          {t("ingestion.file_settings", "File Settings")}
+        </div>
 
         {/* Filename */}
         <div className="flex gap-2 justify-between items-center text-text-verba">
-          <p className="flex min-w-[8vw]">Title</p>
+          <p className="flex min-w-[8vw]">{t("ingestion.title", "Title")}</p>
           <label className="input flex items-center gap-2 w-full bg-bg-verba">
             <input
               type="text"
@@ -253,14 +263,18 @@ const BasicSettingView: React.FC<BasicSettingViewProps> = ({
         <div className="flex gap-2 items-center text-text-verba">
           <p className="flex min-w-[8vw]"></p>
           <p className="text-sm text-text-alt-verba text-start">
-            Add a Title to the document. If you are adding a URL, all URL will
-            have a have their corresponding URL as filename.
+            {t(
+              "ingestion.title_help",
+              "Add a Title to the document. If you are adding a URL, all URL will have a have their corresponding URL as filename."
+            )}
           </p>
         </div>
 
         {/* Source */}
         <div className="flex gap-2 justify-between items-center text-text-verba">
-          <p className="flex min-w-[8vw]">Source Link</p>
+          <p className="flex min-w-[8vw]">
+            {t("ingestion.source_link", "Source Link")}
+          </p>
           <label className="input flex items-center gap-2 w-full bg-bg-verba">
             <input
               type="text"
@@ -275,14 +289,16 @@ const BasicSettingView: React.FC<BasicSettingViewProps> = ({
         <div className="flex gap-2 items-center text-text-verba">
           <p className="flex min-w-[8vw]"></p>
           <p className="text-sm text-text-alt-verba text-start">
-            Add a link to reference the original source of the document. You can
-            access it through the Document Explorer via the View Source button
+            {t(
+              "ingestion.source_link_help",
+              "Add a link to reference the original source of the document. You can access it through the Document Explorer via the View Source button"
+            )}
           </p>
         </div>
 
         {/* Labels */}
         <div className="flex gap-2 justify-between items-center text-text-verba">
-          <p className="flex min-w-[8vw]">Labels</p>
+          <p className="flex min-w-[8vw]">{t("ingestion.labels", "Labels")}</p>
           <label className="input flex items-center gap-2 w-full bg-bg-verba">
             <input
               type="text"
@@ -302,7 +318,7 @@ const BasicSettingView: React.FC<BasicSettingViewProps> = ({
             />
           </label>
           <VerbaButton
-            title="Add"
+            title={t("common.add", "Add")}
             Icon={IoAddCircleSharp}
             onClick={() => {
               addLabel(label);
@@ -314,7 +330,10 @@ const BasicSettingView: React.FC<BasicSettingViewProps> = ({
         <div className="flex gap-2 items-center text-text-verba">
           <p className="flex min-w-[8vw]"></p>
           <p className="text-sm text-text-alt-verba text-start">
-            Add or remove labels for Document Filtering
+            {t(
+              "ingestion.labels_help",
+              "Add or remove labels for Document Filtering"
+            )}
           </p>
         </div>
 
@@ -327,7 +346,9 @@ const BasicSettingView: React.FC<BasicSettingViewProps> = ({
 
         {/* Overwrite */}
         <div className="flex gap-2 items-center text-text-verba">
-          <p className="flex min-w-[8vw]">Overwrite</p>
+          <p className="flex min-w-[8vw]">
+            {t("ingestion.overwrite", "Overwrite")}
+          </p>
           <input
             type="checkbox"
             className="checkbox checkbox-md"
@@ -344,15 +365,22 @@ const BasicSettingView: React.FC<BasicSettingViewProps> = ({
         <div className="flex gap-2 items-center text-text-verba">
           <p className="flex min-w-[8vw]"></p>
           <p className="text-sm text-text-alt-verba text-start">
-            Overwrite existing documents with the same name.
+            {t(
+              "ingestion.overwrite_help",
+              "Overwrite existing documents with the same name."
+            )}
           </p>
         </div>
 
-        <div className="divider  text-text-alt-verba">Metadata</div>
+        <div className="divider  text-text-alt-verba">
+          {t("ingestion.metadata_divider", "Metadata")}
+        </div>
 
         {/* Metadata */}
         <div className="flex gap-2 justify-between items-center text-text-verba">
-          <p className="flex min-w-[8vw]">Metadata</p>
+          <p className="flex min-w-[8vw]">
+            {t("ingestion.metadata", "Metadata")}
+          </p>
           <textarea
             className="grow w-full textarea flex items-center gap-2 max-h-64 bg-bg-verba"
             value={metadata}
@@ -364,17 +392,22 @@ const BasicSettingView: React.FC<BasicSettingViewProps> = ({
         <div className="flex gap-2 items-center text-text-verba">
           <p className="flex min-w-[8vw]"></p>
           <p className="text-sm text-text-alt-verba text-start">
-            Add metadata to the document to improve retrieval and generation.
-            Metadata will added to the context sent to the embedding and
-            generation, to influcence the results.
+            {t(
+              "ingestion.metadata_help",
+              "Add metadata to the document to improve retrieval and generation. Metadata will added to the context sent to the embedding and generation, to influcence the results."
+            )}
           </p>
         </div>
 
-        <div className="divider  text-text-alt-verba">File Information</div>
+        <div className="divider  text-text-alt-verba">
+          {t("ingestion.file_information", "File Information")}
+        </div>
 
         {/* Extension */}
         <div className="flex gap-2 justify-between items-center text-text-verba">
-          <p className="flex min-w-[8vw]">Extension</p>
+          <p className="flex min-w-[8vw]">
+            {t("ingestion.extension", "Extension")}
+          </p>
           <label className="input flex items-center gap-2 w-full bg-bg-verba">
             <input
               type="text"
@@ -387,7 +420,9 @@ const BasicSettingView: React.FC<BasicSettingViewProps> = ({
 
         {/* File Size */}
         <div className="flex gap-2 justify-between items-center text-text-verba">
-          <p className="flex min-w-[8vw]">File Size</p>
+          <p className="flex min-w-[8vw]">
+            {t("ingestion.file_size", "File Size")}
+          </p>
           <label className="input flex items-center gap-2 w-full bg-bg-verba">
             <input
               type="text"
@@ -398,11 +433,13 @@ const BasicSettingView: React.FC<BasicSettingViewProps> = ({
           </label>
         </div>
 
-        <div className="divider  text-text-alt-verba">Ingestion Pipeline</div>
+        <div className="divider  text-text-alt-verba">
+          {t("ingestion.pipeline", "Ingestion Pipeline")}
+        </div>
 
         {/* Reader */}
         <div className="flex gap-2 justify-between items-center text-text-verba">
-          <p className="flex min-w-[8vw]">Reader</p>
+          <p className="flex min-w-[8vw]">{t("ingestion.reader", "Reader")}</p>
           <label className="input flex items-center gap-2 w-full bg-bg-verba">
             <input
               type="text"
@@ -417,15 +454,30 @@ const BasicSettingView: React.FC<BasicSettingViewProps> = ({
           <p className="flex min-w-[8vw]"></p>
           <p className="text-sm text-text-alt-verba text-start">
             {selectedFileData &&
-              fileMap[selectedFileData].rag_config["Reader"].components[
-                fileMap[selectedFileData].rag_config["Reader"].selected
-              ].description}
+              t(
+                (() => {
+                  const val =
+                    fileMap[selectedFileData].rag_config["Reader"].components[
+                      fileMap[selectedFileData].rag_config["Reader"].selected
+                    ].description;
+                  return Array.isArray(val) ? val.join(" ") : val ?? "";
+                })(),
+                (() => {
+                  const val =
+                    fileMap[selectedFileData].rag_config["Reader"].components[
+                      fileMap[selectedFileData].rag_config["Reader"].selected
+                    ].description;
+                  return Array.isArray(val) ? val.join(" ") : val ?? "";
+                })()
+              )}
           </p>
         </div>
 
         {/* Chunker */}
         <div className="flex gap-2 justify-between items-center text-text-verba">
-          <p className="flex min-w-[8vw]">Chunker</p>
+          <p className="flex min-w-[8vw]">
+            {t("ingestion.chunker", "Chunker")}
+          </p>
           <label className="input flex items-center gap-2 w-full bg-bg-verba">
             <input
               type="text"
@@ -440,15 +492,30 @@ const BasicSettingView: React.FC<BasicSettingViewProps> = ({
           <p className="flex min-w-[8vw]"></p>
           <p className="text-sm text-text-alt-verba text-start">
             {selectedFileData &&
-              fileMap[selectedFileData].rag_config["Chunker"].components[
-                fileMap[selectedFileData].rag_config["Chunker"].selected
-              ].description}
+              t(
+                (() => {
+                  const val =
+                    fileMap[selectedFileData].rag_config["Chunker"].components[
+                      fileMap[selectedFileData].rag_config["Chunker"].selected
+                    ].description;
+                  return Array.isArray(val) ? val.join(" ") : val ?? "";
+                })(),
+                (() => {
+                  const val =
+                    fileMap[selectedFileData].rag_config["Chunker"].components[
+                      fileMap[selectedFileData].rag_config["Chunker"].selected
+                    ].description;
+                  return Array.isArray(val) ? val.join(" ") : val ?? "";
+                })()
+              )}
           </p>
         </div>
 
         {/* Embedder */}
         <div className="flex gap-2 justify-between items-center text-text-verba">
-          <p className="flex min-w-[8vw]">Embedder</p>
+          <p className="flex min-w-[8vw]">
+            {t("ingestion.embedder", "Embedder")}
+          </p>
           <label className="input flex items-center gap-2 w-full bg-bg-verba">
             <input
               type="text"
@@ -463,16 +530,29 @@ const BasicSettingView: React.FC<BasicSettingViewProps> = ({
           <p className="flex min-w-[8vw]"></p>
           <p className="text-sm text-text-alt-verba text-start">
             {selectedFileData &&
-              fileMap[selectedFileData].rag_config["Embedder"].components[
-                fileMap[selectedFileData].rag_config["Embedder"].selected
-              ].description}
+              t(
+                (() => {
+                  const val =
+                    fileMap[selectedFileData].rag_config["Embedder"].components[
+                      fileMap[selectedFileData].rag_config["Embedder"].selected
+                    ].description;
+                  return Array.isArray(val) ? val.join(" ") : val ?? "";
+                })(),
+                (() => {
+                  const val =
+                    fileMap[selectedFileData].rag_config["Embedder"].components[
+                      fileMap[selectedFileData].rag_config["Embedder"].selected
+                    ].description;
+                  return Array.isArray(val) ? val.join(" ") : val ?? "";
+                })()
+              )}
           </p>
         </div>
 
         <div className="divider"></div>
 
         <div className="flex gap-2 justify-between items-center text-text-verba">
-          <p className="flex min-w-[8vw]">Debug</p>
+          <p className="flex min-w-[8vw]">{t("ingestion.debug", "Debug")}</p>
           <VerbaButton
             Icon={CgDebug}
             onClick={openDebugModal}
@@ -482,15 +562,21 @@ const BasicSettingView: React.FC<BasicSettingViewProps> = ({
 
         <dialog id={"File_Debug_Modal"} className="modal">
           <div className="modal-box min-w-fit">
-            <h3 className="font-bold text-lg">Debugging File Configuration</h3>
+            <h3 className="font-bold text-lg">
+              {t(
+                "ingestion.debugging_file_configuration",
+                "Debugging File Configuration"
+              )}
+            </h3>
             <pre className="whitespace-pre-wrap text-xs">
               {selectedFileData
                 ? (() => {
-                    // Create a shallow copy of the object
                     const objCopy = { ...fileMap[selectedFileData] };
-                    // Delete the `content` property
-                    objCopy.content = "File Content";
-                    // Convert to a pretty-printed JSON string
+                    // Replace content with a readable placeholder (visible to user)
+                    objCopy.content = t(
+                      "ingestion.file_content_placeholder",
+                      "File Content"
+                    );
                     return JSON.stringify(objCopy, null, 2);
                   })()
                 : ""}
@@ -498,7 +584,7 @@ const BasicSettingView: React.FC<BasicSettingViewProps> = ({
             <div className="modal-action">
               <form method="dialog">
                 <button className="btn text-text-verba bg-warning-verba border-none hover:bg-button-hover-verba ml-2">
-                  Close
+                  {t("common.close", "Close")}
                 </button>
               </form>
             </div>

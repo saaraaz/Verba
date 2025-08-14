@@ -9,6 +9,7 @@ import { RAGConfig, RAGComponentConfig } from "@/app/types";
 import { closeOnClick } from "@/app/util";
 
 import VerbaButton from "../Navigation/VerbaButton";
+import { useTranslation } from "@/context/TranslationContext";
 
 export const MultiInput: React.FC<{
   component_name: string;
@@ -23,6 +24,7 @@ export const MultiInput: React.FC<{
 }> = ({ values, config_title, updateConfig, component_name, blocked }) => {
   const [currentInput, setCurrentInput] = useState("");
   const [currentValues, setCurrentValues] = useState(values);
+  const { t } = useTranslation();
 
   useEffect(() => {
     updateConfig(component_name, config_title, currentValues);
@@ -69,7 +71,7 @@ export const MultiInput: React.FC<{
           className="btn flex gap-2 bg-button-verba border-none hover:bg-secondary-verba text-text-verba"
         >
           <IoAddCircleSharp size={15} />
-          <p>Add</p>
+          <p>{t("common.add", "Add")}</p>
         </button>
       </div>
 
@@ -127,6 +129,8 @@ const ComponentView: React.FC<ComponentViewProps> = ({
   blocked,
   skip_component,
 }) => {
+  const { t } = useTranslation();
+
   function renderComponents(rag_config: RAGConfig) {
     return Object.entries(rag_config[component_name].components)
       .filter(([key, component]) => component.available)
@@ -140,7 +144,7 @@ const ComponentView: React.FC<ComponentViewProps> = ({
             }
           }}
         >
-          <a>{component.name}</a>
+          <a>{t(component.name, component.name)}</a>
         </li>
       ));
   }
@@ -158,7 +162,7 @@ const ComponentView: React.FC<ComponentViewProps> = ({
           }
         }}
       >
-        <a>{configValue}</a>
+        <a>{t(configValue, configValue)}</a>
       </li>
     ));
   }
@@ -177,9 +181,16 @@ const ComponentView: React.FC<ComponentViewProps> = ({
     <div className="flex flex-col justify-start gap-3 rounded-2xl p-1 w-full ">
       <div className="flex items-center justify-between">
         <div className="divider text-text-alt-verba flex-grow text-xs lg:text-sm">
-          <p>{RAGConfig[component_name].selected} Settings</p>
+          <p>
+            {t("ingestion.settings.title", "{{name}} Settings", {
+              name: t(
+                RAGConfig[component_name].selected,
+                RAGConfig[component_name].selected
+              ),
+            })}
+          </p>
           <VerbaButton
-            title="Save"
+            title={t("common.save", "Save")}
             onClick={() => {
               saveComponentConfig(
                 component_name,
@@ -197,7 +208,7 @@ const ComponentView: React.FC<ComponentViewProps> = ({
         <div className="flex flex-col gap-2">
           <div className="flex gap-2 justify-between items-center text-text-verba">
             <p className="flex min-w-[8vw] lg:text-base text-sm">
-              {component_name}
+              {t(component_name, component_name)}
             </p>
             <div className="dropdown dropdown-bottom flex justify-start items-center w-full">
               <button
@@ -207,7 +218,12 @@ const ComponentView: React.FC<ComponentViewProps> = ({
                 className="btn bg-button-verba hover:bg-button-hover-verba text-text-verba w-full flex justify-start border-none"
               >
                 <GoTriangleDown size={15} />
-                <p>{RAGConfig[component_name].selected}</p>
+                <p>
+                  {t(
+                    RAGConfig[component_name].selected,
+                    RAGConfig[component_name].selected
+                  )}
+                </p>
               </button>
               <ul
                 tabIndex={0}
@@ -221,11 +237,14 @@ const ComponentView: React.FC<ComponentViewProps> = ({
           <div className="flex gap-2 items-center text-text-verba">
             <p className="flex min-w-[8vw]"></p>
             <p className="lg:text-sm text-xs text-text-alt-verba text-start">
-              {
+              {t(
                 RAGConfig[component_name].components[
                   RAGConfig[component_name].selected
-                ].description
-              }
+                ].description?.toString() || "",
+                RAGConfig[component_name].components[
+                  RAGConfig[component_name].selected
+                ].description?.toString() || ""
+              )}
             </p>
           </div>
         </div>
@@ -237,7 +256,7 @@ const ComponentView: React.FC<ComponentViewProps> = ({
       ).map(([configTitle, config]) => (
         <div key={"Configuration" + configTitle + component_name}>
           <div className="flex gap-3 justify-between items-center text-text-verba lg:text-base text-sm">
-            <p className="flex min-w-[8vw]">{configTitle}</p>
+            <p className="flex min-w-[8vw]">{t(configTitle, configTitle)}</p>
 
             {/* Dropdown */}
             {config.type === "dropdown" && (
@@ -249,7 +268,7 @@ const ComponentView: React.FC<ComponentViewProps> = ({
                   className="btn bg-button-verba hover:bg-button-hover-verba text-text-verba w-full flex justify-start border-none"
                 >
                   <GoTriangleDown size={15} />
-                  <p>{config.value}</p>
+                  <p>{t(String(config.value), String(config.value))}</p>
                 </button>
                 <ul
                   tabIndex={0}
@@ -310,7 +329,10 @@ const ComponentView: React.FC<ComponentViewProps> = ({
             {config.type == "bool" && (
               <div className="flex gap-5 justify-start items-center w-full my-4">
                 <p className="lg:text-sm text-xs text-text-alt-verba text-start w-[250px]">
-                  {config.description}
+                  {t(
+                    config.description?.toString() || "",
+                    config.description?.toString() || ""
+                  )}
                 </p>
                 <input
                   type="checkbox"
@@ -336,7 +358,10 @@ const ComponentView: React.FC<ComponentViewProps> = ({
             <div className="flex gap-2 items-center text-text-verba mt-3">
               <p className="flex min-w-[8vw]"></p>
               <p className="text-xs text-text-alt-verba text-start">
-                {config.description}
+                {t(
+                  config.description?.toString() || "",
+                  config.description?.toString() || ""
+                )}
               </p>
             </div>
           )}

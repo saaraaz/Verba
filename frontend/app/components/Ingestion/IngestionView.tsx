@@ -12,6 +12,7 @@ import {
 } from "@/app/types";
 import { RAGConfig } from "@/app/types";
 import { getImportWebSocketApiHost } from "@/app/util";
+import { useTranslation } from "@/context/TranslationContext";
 
 interface IngestionViewProps {
   credentials: Credentials;
@@ -33,6 +34,7 @@ const IngestionView: React.FC<IngestionViewProps> = ({
   const [selectedFileData, setSelectedFileData] = useState<string | null>(null);
   const [reconnect, setReconnect] = useState(false);
   const [socket, setSocket] = useState<WebSocket | null>(null);
+  const { t } = useTranslation();
 
   const [socketStatus, setSocketStatus] = useState<"ONLINE" | "OFFLINE">(
     "OFFLINE"
@@ -123,7 +125,10 @@ const IngestionView: React.FC<IngestionViewProps> = ({
             newFileMap[fileMapKey].status_report["ERROR"] = {
               fileID: fileMapKey,
               status: "ERROR",
-              message: "Connection was interrupted",
+              message: t(
+                "ingestion.connection_interrupted",
+                "Connection was interrupted"
+              ),
               took: 0,
             };
           }
@@ -136,10 +141,20 @@ const IngestionView: React.FC<IngestionViewProps> = ({
 
   const updateStatus = (data: StatusReport) => {
     if (data.status === "DONE") {
-      addStatusMessage("File " + data.fileID + " imported", "SUCCESS");
+      addStatusMessage(
+        t("ingestion.file_imported", "File {{id}} imported", {
+          id: data.fileID,
+        }),
+        "SUCCESS"
+      );
     }
     if (data.status === "ERROR") {
-      addStatusMessage("File " + data.fileID + " import failed", "ERROR");
+      addStatusMessage(
+        t("ingestion.file_import_failed", "File {{id}} import failed", {
+          id: data.fileID,
+        }),
+        "ERROR"
+      );
     }
     setFileMap((prevFileMap) => {
       if (data && data.fileID in prevFileMap) {
@@ -175,7 +190,10 @@ const IngestionView: React.FC<IngestionViewProps> = ({
   };
 
   const importSelected = () => {
-    addStatusMessage("Importing selected file", "INFO");
+    addStatusMessage(
+      t("ingestion.importing_selected_file", "Importing selected file"),
+      "INFO"
+    );
     if (
       selectedFileData &&
       ["READY", "DONE", "ERROR"].includes(fileMap[selectedFileData].status) &&
@@ -189,7 +207,10 @@ const IngestionView: React.FC<IngestionViewProps> = ({
   };
 
   const importAll = () => {
-    addStatusMessage("Importing all files", "INFO");
+    addStatusMessage(
+      t("ingestion.importing_all_files", "Importing all files"),
+      "INFO"
+    );
     for (const fileID in fileMap) {
       if (
         ["READY", "DONE", "ERROR"].includes(fileMap[fileID].status) &&

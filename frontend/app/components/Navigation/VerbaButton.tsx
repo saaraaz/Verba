@@ -2,6 +2,7 @@
 
 import React from "react";
 import { FaStar } from "react-icons/fa";
+import { useTranslation } from "@/context/TranslationContext";
 
 interface VerbaButtonProps {
   title?: string;
@@ -44,6 +45,8 @@ const VerbaButton: React.FC<VerbaButtonProps> = ({
   circle = false,
   onClickParams = [],
 }) => {
+  const { t } = useTranslation();
+
   return (
     <button
       type={type}
@@ -63,8 +66,11 @@ const VerbaButton: React.FC<VerbaButtonProps> = ({
         <>
           {Icon && <Icon size={icon_size} className="w-[20px]" />}
           {title && (
-            <p title={title} className={text_size + " " + text_class_name}>
-              {title}
+            <p
+              title={t(title, title)}
+              className={text_size + " " + text_class_name}
+            >
+              {t(title, title)}
             </p>
           )}
         </>

@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { VerbaDocument, Credentials } from "@/app/types";
 import { fetchSelectedDocument } from "@/app/api";
+import { useTranslation } from "@/context/TranslationContext";
 
 interface DocumentMetaViewProps {
   selectedDocument: string;
@@ -15,6 +16,7 @@ const DocumentMetaView: React.FC<DocumentMetaViewProps> = ({
 }) => {
   const [isFetching, setIsFetching] = useState(true);
   const [document, setDocument] = useState<VerbaDocument | null>(null);
+  const { t } = useTranslation();
 
   useEffect(() => {
     handleFetchDocument();
@@ -52,7 +54,7 @@ const DocumentMetaView: React.FC<DocumentMetaViewProps> = ({
           <div className="bg-bg-alt-verba flex flex-col rounded-lg overflow-hidden h-full">
             <div className="p-4 flex flex-col gap-2 items-start justify-start">
               <p className="font-bold flex text-xs text-start text-text-alt-verba">
-                Title
+                {t("document.label.title", "Title")}
               </p>
               <p
                 className="text-text-verba truncate max-w-full"
@@ -63,25 +65,25 @@ const DocumentMetaView: React.FC<DocumentMetaViewProps> = ({
             </div>
             <div className="p-4 flex flex-col gap-2 items-start justify-start">
               <p className="font-bold flex text-xs text-start text-text-alt-verba">
-                Metadata
+                {t("document.label.metadata", "Metadata")}
               </p>
               <p className="text-text-verba max-w-full">{document.metadata}</p>
             </div>
             <div className="p-4 flex flex-col gap-2 items-start justify-start">
               <p className="font-bold flex text-xs text-start text-text-alt-verba">
-                Extension
+                {t("document.label.extension", "Extension")}
               </p>
               <p className="text-text-verba max-w-full">{document.extension}</p>
             </div>
             <div className="p-4 flex flex-col gap-2 items-start justify-start">
               <p className="font-bold flex text-xs text-start text-text-alt-verba">
-                File Size
+                {t("document.label.file_size", "File Size")}
               </p>
               <p className="text-text-verba max-w-full">{document.fileSize}</p>
             </div>
             <div className="p-4 flex flex-col gap-2 items-start justify-start">
               <p className="font-bold flex text-xs text-start text-text-alt-verba">
-                Source
+                {t("document.label.source", "Source")}
               </p>
               <button
                 className="text-text-verba truncate max-w-full"
@@ -93,7 +95,7 @@ const DocumentMetaView: React.FC<DocumentMetaViewProps> = ({
             </div>
             <div className="p-4 flex flex-col gap-2 items-start justify-start">
               <p className="font-bold flex text-xs text-start text-text-alt-verba">
-                Labels
+                {t("document.label.labels", "Labels")}
               </p>
               <p className="text-text-verba max-w-full">{document.labels}</p>
             </div>

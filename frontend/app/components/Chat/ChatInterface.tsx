@@ -35,6 +35,7 @@ import {
 import InfoComponent from "../Navigation/InfoComponent";
 import ChatConfig from "./ChatConfig";
 import ChatMessage from "./ChatMessage";
+import { useTranslation } from "@/context/TranslationContext";
 
 interface ChatInterfaceProps {
   credentials: Credentials;
@@ -67,6 +68,8 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
   setDocumentFilter,
 }) => {
   const [selectedSetting, setSelectedSetting] = useState("Chat");
+
+  const { t } = useTranslation();
 
   const isFetching = useRef<boolean>(false);
   const [fetchingStatus, setFetchingStatus] = useState<
@@ -387,13 +390,16 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
       <div className="bg-bg-alt-verba rounded-2xl flex gap-2 p-3 items-center justify-between h-min w-full">
         <div className="hidden md:flex gap-2 justify-start items-center">
           <InfoComponent
-            tooltip_text="Use the Chat interface to interact with your data and perform Retrieval Augmented Generation (RAG). This interface allows you to ask questions, analyze sources, and generate responses based on your stored documents."
-            display_text={"Chat"}
+            tooltip_text={t(
+              "chat.tooltip",
+              "Use the Chat interface to interact with your data and perform Retrieval Augmented Generation (RAG). This interface allows you to ask questions, analyze sources, and generate responses based on your stored documents."
+            )}
+            display_text={t("chat.title", "Chat")}
           />
         </div>
         <div className="w-full md:w-fit flex gap-3 justify-end items-center">
           <VerbaButton
-            title="Chat"
+            title={t("chat.button.chat", "Chat")}
             Icon={IoChatbubbleSharp}
             onClick={() => {
               setSelectedSetting("Chat");
@@ -404,7 +410,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
           />
           {production != "Demo" && (
             <VerbaButton
-              title="Config"
+              title={t("chat.button.config", "Config")}
               Icon={FaHammer}
               onClick={() => {
                 setSelectedSetting("Config");
@@ -426,7 +432,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
                 <div className="dropdown dropdown-hover">
                   <label tabIndex={0}>
                     <VerbaButton
-                      title="Label"
+                      title={t("chat.label", "Label")}
                       className="btn-sm min-w-min"
                       icon_size={12}
                       text_class_name="text-xs"
@@ -468,7 +474,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
                     setFilterLabels([]);
                     setDocumentFilter([]);
                   }}
-                  title="Clear"
+                  title={t("chat.clear", "Clear")}
                   className="btn-sm max-w-min"
                   icon_size={12}
                   text_class_name="text-xs"
@@ -557,8 +563,10 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
               <div className="flex items-center gap-3">
                 <span className="text-text-alt-verba loading loading-dots loading-md"></span>
                 <p className="text-text-alt-verba">
-                  {fetchingStatus === "CHUNKS" && "Retrieving..."}
-                  {fetchingStatus === "RESPONSE" && "Generating..."}
+                  {fetchingStatus === "CHUNKS" &&
+                    t("chat.status.retrieving", "Retrieving...")}
+                  {fetchingStatus === "RESPONSE" &&
+                    t("chat.status.generating", "Generating...")}
                 </p>
                 <button
                   onClick={() => {
@@ -595,9 +603,18 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
                 placeholder={
                   currentDatacount > 0
                     ? currentDatacount >= 100
-                      ? `Chatting with more than 100 documents...`
-                      : `Chatting with ${currentDatacount} documents...`
-                    : `No documents detected...`
+                      ? t(
+                          "chat.placeholder.100plus",
+                          "Chatting with more than 100 documents..."
+                        )
+                      : t(
+                          "chat.placeholder.few",
+                          `Chatting with ${currentDatacount} documents...`,
+                          {
+                            count: currentDatacount,
+                          }
+                        )
+                    : t("chat.placeholder.none", "No documents detected...")
                 }
                 onKeyDown={handleKeyDown}
                 onCompositionStart={handleCompositionStart}
@@ -679,7 +696,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
               className="flex btn border-none text-text-verba bg-button-verba hover:bg-button-hover-verba gap-2 items-center"
             >
               <TbPlugConnected size={15} />
-              <p>Reconnecting...</p>
+              <p>{t("chat.reconnecting", "Reconnecting...")}</p>
               <span className="loading loading-spinner loading-xs"></span>
             </button>
           </div>

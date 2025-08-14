@@ -17,6 +17,7 @@ import SettingsComponent from "./SettingsComponent";
 import InfoComponent from "../Navigation/InfoComponent";
 import SuggestionView from "./SuggestionView";
 import InfoView from "./InfoView";
+import { useTranslation } from "@/context/TranslationContext";
 
 interface SettingsViewProps {
   selectedTheme: Theme;
@@ -41,6 +42,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({
   const [settingMode, setSettingMode] = useState<
     "INFO" | "ADMIN" | "THEME" | "SUGGESTIONS" | "CACHE"
   >("INFO");
+  const { t } = useTranslation();
 
   return (
     <div className="flex justify-center gap-3 h-[80vh] ">
@@ -49,28 +51,34 @@ const SettingsView: React.FC<SettingsViewProps> = ({
           <div className="bg-bg-alt-verba rounded-2xl flex gap-2 p-3 items-center justify-between h-min w-full">
             <div className="flex gap-2 justify-start ">
               <InfoComponent
-                tooltip_text="Customize Verba's Theme, reset collections, logout or report issues."
-                display_text={"Settings"}
+                tooltip_text={t(
+                  "settings.tooltip",
+                  "Customize Verba's Theme, reset collections, logout or report issues."
+                )}
+                display_text={t("settings.title", "Settings")}
               />
             </div>
           </div>
           <div className="bg-bg-alt-verba gap-2 rounded-2xl flex flex-col p-3 w-full overflow-y-auto overflow-x-hidden">
             <VerbaButton
-              title="Admin"
+              title={t("settings.left.admin", "Admin")}
               onClick={() => setSettingMode("INFO")}
               selected={settingMode === "INFO"}
               selected_color="bg-secondary-verba"
               Icon={RiAdminFill}
             />
             <VerbaButton
-              title="Customize Theme"
+              title={t("settings.left.customize_theme", "Customize Theme")}
               onClick={() => setSettingMode("THEME")}
               selected={settingMode === "THEME"}
               selected_color="bg-secondary-verba"
               Icon={FaPaintBrush}
             />
             <VerbaButton
-              title="Manage Suggestions"
+              title={t(
+                "settings.left.manage_suggestions",
+                "Manage Suggestions"
+              )}
               onClick={() => setSettingMode("SUGGESTIONS")}
               selected={settingMode === "SUGGESTIONS"}
               selected_color="bg-secondary-verba"
@@ -79,12 +87,12 @@ const SettingsView: React.FC<SettingsViewProps> = ({
           </div>
           <div className="bg-bg-alt-verba gap-2 rounded-2xl flex flex-col p-6 w-full overflow-y-auto overflow-x-hidden">
             <VerbaButton
-              title="Logout"
+              title={t("settings.left.logout", "Logout")}
               onClick={() => window.location.reload()}
               Icon={IoLogOutSharp}
             />
             <VerbaButton
-              title="Report Issue"
+              title={t("settings.left.report_issue", "Report Issue")}
               onClick={() =>
                 window.open(
                   "https://github.com/weaviate/Verba/issues/new/choose",

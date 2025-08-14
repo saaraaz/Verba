@@ -25,6 +25,7 @@ import { FaCheckCircle } from "react-icons/fa";
 import { MdCancel } from "react-icons/md";
 
 import { updateThemeConfig } from "@/app/api";
+import { useTranslation } from "@/context/TranslationContext";
 
 interface SettingsComponentProps {
   selectedTheme: Theme;
@@ -47,6 +48,7 @@ const SettingsComponent: React.FC<SettingsComponentProps> = ({
   addStatusMessage,
 }) => {
   const [imageURL, setImageURL] = useState("");
+  const { t } = useTranslation();
 
   const resetThemes = () => {
     setThemes({
@@ -56,12 +58,20 @@ const SettingsComponent: React.FC<SettingsComponentProps> = ({
       WCD: WCDTheme,
     });
     setSelectedTheme(WeaviateTheme);
-    addStatusMessage("Themes reset", "SUCCESS");
+    addStatusMessage(
+      t("settings.status.themes_reset", "Themes reset"),
+      "SUCCESS"
+    );
   };
 
   const saveTheme = async () => {
     await updateThemeConfig(themes, selectedTheme, credentials);
-    addStatusMessage(`Changes to ${selectedTheme.theme_name} saved`, "SUCCESS");
+    addStatusMessage(
+      t("settings.status.changes_saved_for", "Changes to {{name}} saved", {
+        name: selectedTheme.theme_name,
+      }),
+      "SUCCESS"
+    );
   };
 
   const updateValue = (title: keyof Theme, value: any) => {
@@ -145,7 +155,9 @@ const SettingsComponent: React.FC<SettingsComponentProps> = ({
     return (
       <div key={title}>
         <div className="flex gap-3 justify-between items-center text-text-verba">
-          <p className="flex min-w-[8vw]">{setting_type.description}</p>
+          <p className="flex min-w-[8vw]">
+            {t(setting_type.description, setting_type.description)}
+          </p>
           {setting_type.type === "text" && (
             <label className="input flex items-center gap-2 w-full border-none bg-bg-verba">
               <input
@@ -167,7 +179,7 @@ const SettingsComponent: React.FC<SettingsComponentProps> = ({
             >
               {setting_type.options.map((template) => (
                 <option key={"Select_" + template} value={template}>
-                  {template}
+                  {t(template, template)}
                 </option>
               ))}
             </select>
@@ -201,7 +213,10 @@ const SettingsComponent: React.FC<SettingsComponentProps> = ({
                   <input
                     type="text"
                     className="grow"
-                    placeholder="Enter image URL"
+                    placeholder={t(
+                      "settings.enter_image_url",
+                      "Enter image URL"
+                    )}
                     value={imageURL}
                     onChange={(e) => setImageURL(e.target.value)}
                   />
@@ -210,11 +225,11 @@ const SettingsComponent: React.FC<SettingsComponentProps> = ({
               <div className="flex justify-between items-center gap-4">
                 <div className="flex flex-col gap-2">
                   <VerbaButton
-                    title="Set Link"
+                    title={t("settings.set_link", "Set Link")}
                     onClick={() => updateValue(title, imageURL)}
                   />
                   <VerbaButton
-                    title="Upload Image"
+                    title={t("settings.upload_image", "Upload Image")}
                     onClick={() =>
                       document.getElementById(`${title}ImageInput`)?.click()
                     }
@@ -230,7 +245,9 @@ const SettingsComponent: React.FC<SettingsComponentProps> = ({
                 {(selectedTheme as any)[title].src && (
                   <img
                     src={(selectedTheme as any)[title].src}
-                    alt={`${title} preview`}
+                    alt={t("settings.image_preview", "{{title}} preview", {
+                      title: String(title),
+                    })}
                     className="max-w-full max-h-32 rounded-xl"
                   />
                 )}
@@ -245,7 +262,9 @@ const SettingsComponent: React.FC<SettingsComponentProps> = ({
   return (
     <div className="flex flex-col w-full h-full p-4">
       <div className="flex justify-between items-center mb-4">
-        <p className="text-2xl font-bold">Customize Theme</p>
+        <p className="text-2xl font-bold">
+          {t("settings.customize_theme", "Customize Theme")}
+        </p>
         <select
           className="select bg-bg-verba"
           value={
@@ -258,32 +277,40 @@ const SettingsComponent: React.FC<SettingsComponentProps> = ({
         >
           {Object.keys(themes).map((themeKey) => (
             <option key={themeKey} value={themeKey}>
-              {themeKey}
+              {t(themeKey, themeKey)}
             </option>
           ))}
         </select>
       </div>
       <div className="flex-grow overflow-y-auto">
         <div className="gap-4 flex flex-col p-4">
-          <p className="font-bold">Customize Logo</p>
+          <p className="font-bold">
+            {t("settings.section.customize_logo", "Customize Logo")}
+          </p>
           {Object.entries(selectedTheme)
             .filter(([_, settingValue]) => settingValue.type === "image")
             .map(([key, settingValue]) =>
               renderSettingComponent(key, settingValue)
             )}
-          <p className="font-bold mt-4">Customize Text</p>
+          <p className="font-bold mt-4">
+            {t("settings.section.customize_text", "Customize Text")}
+          </p>
           {Object.entries(selectedTheme)
             .filter(([_, settingValue]) => settingValue.type === "text")
             .map(([key, settingValue]) =>
               renderSettingComponent(key, settingValue)
             )}
-          <p className="font-bold mt-4">Customize Font</p>
+          <p className="font-bold mt-4">
+            {t("settings.section.customize_font", "Customize Font")}
+          </p>
           {Object.entries(selectedTheme)
             .filter(([_, settingValue]) => settingValue.type === "select")
             .map(([key, settingValue]) =>
               renderSettingComponent(key, settingValue)
             )}
-          <p className="font-bold mt-4">Customize Color</p>
+          <p className="font-bold mt-4">
+            {t("settings.section.customize_color", "Customize Color")}
+          </p>
           {Object.entries(selectedTheme)
             .filter(([_, settingValue]) => settingValue.type === "color")
             .map(([key, settingValue]) =>
@@ -293,13 +320,13 @@ const SettingsComponent: React.FC<SettingsComponentProps> = ({
       </div>
       <div className="flex justify-end gap-2 mt-3">
         <VerbaButton
-          title="Save"
+          title={t("common.save", "Save")}
           onClick={saveTheme}
           className="max-w-min"
           Icon={FaCheckCircle}
         />
         <VerbaButton
-          title="Reset"
+          title={t("common.reset", "Reset")}
           onClick={resetThemes}
           className="max-w-min"
           Icon={MdCancel}

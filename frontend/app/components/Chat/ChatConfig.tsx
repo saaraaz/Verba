@@ -8,6 +8,7 @@ import { updateRAGConfig } from "@/app/api";
 import ComponentView from "../Ingestion/ComponentView";
 
 import VerbaButton from "../Navigation/VerbaButton";
+import { useTranslation } from "@/context/TranslationContext";
 
 interface ChatConfigProps {
   RAGConfig: RAGConfig | null;
@@ -31,6 +32,8 @@ const ChatConfig: React.FC<ChatConfigProps> = ({
   onReset,
   production,
 }) => {
+  const { t } = useTranslation();
+
   const updateConfig = (
     component_n: string,
     configTitle: string,
@@ -73,7 +76,12 @@ const ChatConfig: React.FC<ChatConfigProps> = ({
     ) => {
       if (!RAGConfig) return;
 
-      addStatusMessage("Saving " + selected_component + " Config", "SUCCESS");
+      addStatusMessage(
+        t("chat.config.status.saving", "Saving {{name}} Config", {
+          name: t(selected_component, selected_component),
+        }),
+        "SUCCESS"
+      );
 
       const newRAGConfig = JSON.parse(JSON.stringify(RAGConfig));
       newRAGConfig[component_n].selected = selected_component;
@@ -95,13 +103,13 @@ const ChatConfig: React.FC<ChatConfigProps> = ({
           <div className="flex justify-end w-full gap-2 p-4 bg-bg-alt-verba rounded-lg">
             <VerbaButton
               Icon={IoSettingsSharp}
-              title="Save Config"
+              title={t("chat.config.save_config", "Save Config")}
               onClick={onSave}
               disabled={production == "Demo"}
             />
             <VerbaButton
               Icon={MdCancel}
-              title="Reset"
+              title={t("common.reset", "Reset")}
               onClick={onReset}
               disabled={production == "Demo"}
             />

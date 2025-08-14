@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { useTranslation } from "@/context/TranslationContext";
 
 interface UserModalComponentProps {
   modal_id: string;
@@ -21,17 +22,19 @@ const UserModalComponent: React.FC<UserModalComponentProps> = ({
   triggerString,
   triggerValue,
 }) => {
+  const { t } = useTranslation();
+
   return (
     <dialog id={modal_id} className="modal">
       <div className="modal-box flex flex-col gap-2">
-        <h3 className="font-bold text-lg">{title}</h3>
-        <p className="whitespace-pre-wrap">{text}</p>
+        <h3 className="font-bold text-lg">{t(title, title)}</h3>
+        <p className="whitespace-pre-wrap">{t(text, text)}</p>
         <div className="modal-action">
           <form method="dialog" className="flex gap-2">
             {triggerAccept && triggerString && (
               <VerbaButton
                 type="submit"
-                title={triggerString}
+                title={t(triggerString, triggerString)}
                 onClick={() => {
                   triggerAccept(triggerValue);
                 }}
@@ -39,7 +42,7 @@ const UserModalComponent: React.FC<UserModalComponentProps> = ({
             )}
             <VerbaButton
               type="submit"
-              title="Cancel"
+              title={t("common.cancel", "Cancel")}
               selected_color="bg-warning-verba"
               selected={true}
             />

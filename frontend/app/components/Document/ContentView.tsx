@@ -21,6 +21,7 @@ import {
 import { fetchContent } from "@/app/api";
 
 import VerbaButton from "../Navigation/VerbaButton";
+import { useTranslation } from "@/context/TranslationContext";
 
 interface ContentViewProps {
   document: VerbaDocument | null;
@@ -43,6 +44,7 @@ const ContentView: React.FC<ContentViewProps> = ({
   const [content, setContent] = useState<ContentSnippet[]>([]);
 
   const contentRef = useRef<HTMLDivElement>(null);
+  const { t } = useTranslation();
 
   const nextPage = () => {
     if (page == maxPage) {
@@ -166,18 +168,24 @@ const ContentView: React.FC<ContentViewProps> = ({
             <div className="flex gap-2">
               <div className="flex gap-2 items-center p-3 bg-secondary-verba rounded-full w-fit">
                 <HiSparkles size={12} />
-                <p className="text-xs flex text-text-verba">Context Used</p>
+                <p className="text-xs flex text-text-verba">
+                  {t("document.context_used", "Context Used")}
+                </p>
               </div>
               <div className="flex gap-2 items-center p-3 bg-secondary-verba rounded-full w-fit">
                 <IoNewspaper size={12} />
                 <p className="text-xs flex text-text-verba">
-                  Chunk {contentSnippet.chunk_id + 1}
+                  {t("document.chunk_number", "Chunk {{n}}", {
+                    n: contentSnippet.chunk_id + 1,
+                  })}
                 </p>
               </div>
               {contentSnippet.score > 0 && (
                 <div className="flex gap-2 items-center p-3 bg-primary-verba rounded-full w-fit">
                   <HiSparkles size={12} />
-                  <p className="text-xs flex text-text-verba">High Relevancy</p>
+                  <p className="text-xs flex text-text-verba">
+                    {t("document.high_relevancy", "High Relevancy")}
+                  </p>
                 </div>
               )}
             </div>
@@ -267,7 +275,12 @@ const ContentView: React.FC<ContentViewProps> = ({
 
           <div className="flex justify-center items-center gap-2 p-3 bg-bg-alt-verba">
             <VerbaButton
-              title={"Previous " + (chunkScores ? "Chunk" : "Page")}
+              title={
+                "Previous " +
+                (chunkScores
+                  ? t("document.chunk", "Chunk")
+                  : t("document.page", "Page"))
+              }
               onClick={previousPage}
               className="btn-sm min-w-min max-w-[200px]"
               text_class_name="text-xs"
@@ -275,11 +288,18 @@ const ContentView: React.FC<ContentViewProps> = ({
             />
             <div className="flex items-center">
               <p className="text-xs text-text-verba">
-                {chunkScores ? "Chunk " : "Page "} {page}
+                {chunkScores
+                  ? t("document.chunk_n", "Chunk {{n}}", { n: page })
+                  : t("document.page_n", "Page {{n}}", { n: page })}
               </p>
             </div>
             <VerbaButton
-              title={"Next " + (chunkScores ? "Chunk" : "Page")}
+              title={
+                "Next " +
+                (chunkScores
+                  ? t("document.chunk", "Chunk")
+                  : t("document.page", "Page"))
+              }
               onClick={nextPage}
               className="btn-sm min-w-min max-w-[200px]"
               text_class_name="text-xs"

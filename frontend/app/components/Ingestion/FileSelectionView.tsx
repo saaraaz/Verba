@@ -18,6 +18,7 @@ import VerbaButton from "../Navigation/VerbaButton";
 
 import { FileMap } from "@/app/types";
 import { RAGConfig } from "@/app/types";
+import { useTranslation } from "@/context/TranslationContext";
 
 interface FileSelectionViewProps {
   fileMap: FileMap;
@@ -50,6 +51,7 @@ const FileSelectionView: React.FC<FileSelectionViewProps> = ({
   importAll,
 }) => {
   const ref = React.useRef<HTMLInputElement>(null);
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (ref.current !== null) {
@@ -68,14 +70,20 @@ const FileSelectionView: React.FC<FileSelectionViewProps> = ({
   const handleDeleteFile = (filename: string | null) => {
     setFileMap((prevFileMap: FileMap): FileMap => {
       if (filename === null) {
-        addStatusMessage("Cleared all files", "WARNING");
+        addStatusMessage(
+          t("ingestion.clear_all_files", "Cleared all files"),
+          "WARNING"
+        );
         setSelectedFileData(null);
         return {};
       } else {
         if (filename === selectedFileData) {
           setSelectedFileData(null);
         }
-        addStatusMessage("Cleared selected file", "WARNING");
+        addStatusMessage(
+          t("ingestion.clear_selected_file", "Cleared selected file"),
+          "WARNING"
+        );
         const newFileMap: FileMap = { ...prevFileMap };
         delete newFileMap[filename];
         return newFileMap;
@@ -101,7 +109,10 @@ const FileSelectionView: React.FC<FileSelectionViewProps> = ({
         ? selectedDirReader
         : selectedFileReader;
 
-      addStatusMessage("Added new files", "SUCCESS");
+      addStatusMessage(
+        t("ingestion.added_new_files", "Added new files"),
+        "SUCCESS"
+      );
 
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
@@ -153,11 +164,16 @@ const FileSelectionView: React.FC<FileSelectionViewProps> = ({
       newRAGConfig["Reader"].selected = URLReader;
 
       const now = new Date();
-      const filename = "New " + URLReader + " Job";
+      const filename = t("ingestion.new_url_job", "New {{reader}} Job", {
+        reader: URLReader,
+      });
       const fileID = now.toISOString();
       const extension = "URL";
 
-      addStatusMessage("Added new URL Job", "SUCCESS");
+      addStatusMessage(
+        t("ingestion.added_new_url_job", "Added new URL Job"),
+        "SUCCESS"
+      );
 
       newFileMap[fileID] = {
         fileID,
@@ -223,15 +239,18 @@ const FileSelectionView: React.FC<FileSelectionViewProps> = ({
       <div className="bg-bg-alt-verba rounded-2xl flex gap-2 p-3 items-center justify-end lg:justify-between h-min w-full">
         <div className="hidden lg:flex gap-2 justify-start ">
           <InfoComponent
-            tooltip_text="Upload your data through this interface into Verba. You can select individual files, directories or add URL to fetch data from."
-            display_text="File Selection"
+            tooltip_text={t(
+              "ingestion.file_selection.tooltip",
+              "Upload your data through this interface into Verba. You can select individual files, directories or add URL to fetch data from."
+            )}
+            display_text={t("ingestion.file_selection.title", "File Selection")}
           />
         </div>
         <div className="flex gap-3 justify-center lg:justify-end">
           <div className="dropdown dropdown-hover">
             <label tabIndex={0}>
               <VerbaButton
-                title="Files"
+                title={t("common.files", "Files")}
                 Icon={IoMdAddCircle}
                 onClick={() => document.getElementById("files_upload")?.click()}
               />
@@ -252,7 +271,7 @@ const FileSelectionView: React.FC<FileSelectionViewProps> = ({
                         closeOnClick();
                       }}
                     >
-                      <a>{component.name}</a>
+                      <a>{t(component.name, component.name)}</a>
                     </li>
                   ))}
             </ul>
@@ -267,7 +286,10 @@ const FileSelectionView: React.FC<FileSelectionViewProps> = ({
 
           <div className="dropdown dropdown-hover">
             <label tabIndex={0}>
-              <VerbaButton title="Directory" Icon={GoFileDirectoryFill} />
+              <VerbaButton
+                title={t("common.directory", "Directory")}
+                Icon={GoFileDirectoryFill}
+              />
             </label>
             <ul
               tabIndex={0}
@@ -285,7 +307,7 @@ const FileSelectionView: React.FC<FileSelectionViewProps> = ({
                         closeOnClick();
                       }}
                     >
-                      <a>{component.name}</a>
+                      <a>{t(component.name, component.name)}</a>
                     </li>
                   ))}
             </ul>
@@ -301,7 +323,10 @@ const FileSelectionView: React.FC<FileSelectionViewProps> = ({
 
           <div className="dropdown dropdown-hover">
             <label tabIndex={0}>
-              <VerbaButton title="URL" Icon={IoMdAddCircle} />
+              <VerbaButton
+                title={t("common.url", "URL")}
+                Icon={IoMdAddCircle}
+              />
             </label>
             <input id={"url_upload"} type="file" className="hidden" />
             <ul
@@ -319,7 +344,7 @@ const FileSelectionView: React.FC<FileSelectionViewProps> = ({
                         closeOnClick();
                       }}
                     >
-                      <a>{component.name}</a>
+                      <a>{t(component.name, component.name)}</a>
                     </li>
                   ))}
             </ul>
@@ -347,19 +372,19 @@ const FileSelectionView: React.FC<FileSelectionViewProps> = ({
           <div className="flex flex-wrap gap-3 justify-end">
             {selectedFileData && (
               <VerbaButton
-                title="Import Selected"
+                title={t("ingestion.import_selected", "Import Selected")}
                 Icon={FaFileImport}
                 onClick={importSelected}
               />
             )}
             <VerbaButton
-              title="Import All"
+              title={t("ingestion.import_all", "Import All")}
               Icon={FaFileImport}
               onClick={importAll}
             />
 
             <VerbaButton
-              title="Clear Files"
+              title={t("ingestion.clear_files", "Clear Files")}
               Icon={MdCancel}
               onClick={openDeleteModal}
             />
@@ -373,7 +398,7 @@ const FileSelectionView: React.FC<FileSelectionViewProps> = ({
               className="flex btn border-none text-text-verba bg-button-verba hover:bg-button-hover-verba gap-2 items-center"
             >
               <TbPlugConnected size={15} />
-              <p>Reconnecting...</p>
+              <p>{t("common.reconnecting", "Reconnecting...")}</p>
               <span className="loading loading-spinner loading-xs"></span>
             </button>
           </div>
@@ -382,9 +407,12 @@ const FileSelectionView: React.FC<FileSelectionViewProps> = ({
 
       <UserModalComponent
         modal_id={"remove_all_files"}
-        title={"Clear all files?"}
-        text={"Do you want to clear all files from your selection?"}
-        triggerString="Clear All"
+        title={t("ingestion.clear_all_files_title", "Clear all files?")}
+        text={t(
+          "ingestion.clear_all_files_text",
+          "Do you want to clear all files from your selection?"
+        )}
+        triggerString={t("ingestion.clear_all", "Clear All")}
         triggerValue={null}
         triggerAccept={handleDeleteFile}
       />

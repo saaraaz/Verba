@@ -9,6 +9,7 @@ import { MdError } from "react-icons/md";
 import UserModalComponent from "../Navigation/UserModal";
 
 import VerbaButton from "../Navigation/VerbaButton";
+import { useTranslation } from "@/context/TranslationContext";
 
 interface FileComponentProps {
   fileData: FileData;
@@ -25,6 +26,8 @@ const FileComponent: React.FC<FileComponentProps> = ({
   selectedFileData,
   setSelectedFileData,
 }) => {
+  const { t } = useTranslation();
+
   const openDeleteModal = () => {
     const modal = document.getElementById(
       "remove_file_" + fileMap[fileData.fileID].filename
@@ -41,13 +44,19 @@ const FileComponent: React.FC<FileComponentProps> = ({
           {fileMap[fileData.fileID].status != "DONE" &&
             fileMap[fileData.fileID].status != "ERROR" && (
               <VerbaButton
-                title={statusTextMap[fileMap[fileData.fileID].status]}
+                title={t(
+                  statusTextMap[fileMap[fileData.fileID].status],
+                  statusTextMap[fileMap[fileData.fileID].status]
+                )}
                 className="w-[120px]"
               />
             )}
           {fileMap[fileData.fileID].status == "DONE" && (
             <VerbaButton
-              title={statusTextMap[fileMap[fileData.fileID].status]}
+              title={t(
+                statusTextMap[fileMap[fileData.fileID].status],
+                statusTextMap[fileMap[fileData.fileID].status]
+              )}
               Icon={FaCheckCircle}
               selected={true}
               className="w-[120px]"
@@ -56,7 +65,10 @@ const FileComponent: React.FC<FileComponentProps> = ({
           )}
           {fileMap[fileData.fileID].status == "ERROR" && (
             <VerbaButton
-              title={statusTextMap[fileMap[fileData.fileID].status]}
+              title={t(
+                statusTextMap[fileMap[fileData.fileID].status],
+                statusTextMap[fileMap[fileData.fileID].status]
+              )}
               Icon={MdError}
               className="w-[120px]"
               selected={true}
@@ -67,7 +79,10 @@ const FileComponent: React.FC<FileComponentProps> = ({
       ) : (
         <div className="flex gap-2">
           <VerbaButton
-            title={fileMap[fileData.fileID].rag_config["Reader"].selected}
+            title={t(
+              fileMap[fileData.fileID].rag_config["Reader"].selected,
+              fileMap[fileData.fileID].rag_config["Reader"].selected
+            )}
             className="w-[120px]"
             text_class_name="truncate w-[100px]"
           />
@@ -77,8 +92,11 @@ const FileComponent: React.FC<FileComponentProps> = ({
       <VerbaButton
         title={
           fileMap[fileData.fileID].filename
-            ? fileMap[fileData.fileID].filename
-            : "No Filename"
+            ? t(
+                fileMap[fileData.fileID].filename,
+                fileMap[fileData.fileID].filename
+              )
+            : t("common.no_filename", "No Filename")
         }
         selected={selectedFileData === fileMap[fileData.fileID].fileID}
         selected_color="bg-secondary-verba"
@@ -99,15 +117,17 @@ const FileComponent: React.FC<FileComponentProps> = ({
 
       <UserModalComponent
         modal_id={"remove_file_" + fileMap[fileData.fileID].filename}
-        title={"Remove File"}
+        title={t("ingestion.remove_file", "Remove File")}
         text={
           fileMap[fileData.fileID].isURL
-            ? "Do you want to remove the URL?"
-            : "Do you want to remove " +
-              fileMap[fileData.fileID].filename +
-              " from the selection?"
+            ? t("ingestion.remove_url", "Do you want to remove the URL?")
+            : t(
+                "ingestion.remove_file_named",
+                "Do you want to remove {{filename}} from the selection?",
+                { filename: fileMap[fileData.fileID].filename }
+              )
         }
-        triggerString="Delete"
+        triggerString={t("common.delete", "Delete")}
         triggerValue={fileMap[fileData.fileID].fileID}
         triggerAccept={handleDeleteFile}
       />

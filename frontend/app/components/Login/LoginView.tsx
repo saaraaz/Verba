@@ -19,6 +19,8 @@ import { connectToVerba } from "@/app/api";
 import VerbaButton from "../Navigation/VerbaButton";
 
 import { Credentials, RAGConfig, Theme, Themes } from "@/app/types";
+import { useTranslation } from "@/context/TranslationContext";
+import { ENABLE_TRANSLATION_UI } from "@/constants/featureFlags";
 
 let prefix = "";
 if (process.env.NODE_ENV === "production") {
@@ -145,6 +147,8 @@ const LoginView: React.FC<LoginViewProps> = ({
   production,
   setRAGConfig,
 }) => {
+  const { t, language, setLanguage } = useTranslation();
+
   const [isLoading, setIsLoading] = useState(true);
 
   const [isConnecting, setIsConnecting] = useState(false);
@@ -194,7 +198,12 @@ const LoginView: React.FC<LoginViewProps> = ({
       } else if (response.connected == false) {
         setIsLoggedIn(false);
         setErrorText(
-          response.error == "" ? "Couldn't connect to Weaviate" : response.error
+          response.error == ""
+            ? t(
+                "login.error.could_not_connect_weaviate",
+                "Couldn't connect to Weaviate"
+              )
+            : response.error
         );
       } else {
         setIsLoggedIn(true);
@@ -262,7 +271,7 @@ const LoginView: React.FC<LoginViewProps> = ({
             <div className="flex flex-col items-center md:items-start gap-2">
               <div className="flex items-center gap-3">
                 <p className="font-light text-3xl md:text-4xl text-text-alt-verba">
-                  Welcome to
+                  {t("login.welcome_to", "Welcome to")}
                 </p>
                 <p className="font-light text-3xl md:text-4xl text-text-verba">
                   Verba
@@ -270,7 +279,7 @@ const LoginView: React.FC<LoginViewProps> = ({
               </div>
               {production == "Local" && (
                 <p className="text-text-verba text-base lg:text-lg ">
-                  Choose your deployment
+                  {t("login.choose_deployment", "Choose your deployment")}
                 </p>
               )}
             </div>
@@ -280,7 +289,7 @@ const LoginView: React.FC<LoginViewProps> = ({
                   <div className="flex flex-col justify-start gap-2 w-full">
                     <VerbaButton
                       Icon={FaDatabase}
-                      title="Weaviate"
+                      title={t("login.buttons.weaviate", "Weaviate")}
                       disabled={isConnecting}
                       onClick={() => {
                         setSelectStage(false);
@@ -288,7 +297,7 @@ const LoginView: React.FC<LoginViewProps> = ({
                       }}
                     />
                     <VerbaButton
-                      title="Docker"
+                      title={t("login.buttons.docker", "Docker")}
                       Icon={FaDocker}
                       disabled={isConnecting}
                       onClick={() => {
@@ -298,7 +307,7 @@ const LoginView: React.FC<LoginViewProps> = ({
                       loading={isConnecting && selectedDeployment == "Docker"}
                     />
                     <VerbaButton
-                      title="Custom"
+                      title={t("login.buttons.custom", "Custom")}
                       Icon={TbDatabaseEdit}
                       disabled={isConnecting}
                       onClick={() => {
@@ -308,7 +317,7 @@ const LoginView: React.FC<LoginViewProps> = ({
                       loading={isConnecting && selectedDeployment == "Custom"}
                     />
                     <VerbaButton
-                      title="Local"
+                      title={t("login.buttons.local", "Local")}
                       Icon={FaLaptopCode}
                       disabled={isConnecting}
                       onClick={() => {
@@ -317,13 +326,37 @@ const LoginView: React.FC<LoginViewProps> = ({
                       }}
                       loading={isConnecting && selectedDeployment == "Local"}
                     />
+                    {ENABLE_TRANSLATION_UI && (
+                      <div className="flex justify-center gap-4 mt-2">
+                        <button
+                          onClick={() => setLanguage("en")}
+                          className={`px-3 py-1 rounded text-sm border ${
+                            language === "en"
+                              ? "bg-primary-verba text-white border-primary-verba"
+                              : "bg-button-verba text-text-verba border-gray-300"
+                          }`}
+                        >
+                          English
+                        </button>
+                        <button
+                          onClick={() => setLanguage("fa")}
+                          className={`px-3 py-1 rounded text-sm border ${
+                            language === "fa"
+                              ? "bg-primary-verba text-white border-primary-verba"
+                              : "bg-button-verba text-text-verba border-gray-300"
+                          }`}
+                        >
+                          فارسی
+                        </button>
+                      </div>
+                    )}
                   </div>
                 )}
                 {production == "Demo" && (
                   <div className="flex flex-col justify-start gap-4 w-full">
                     <VerbaButton
                       Icon={HiMiniSparkles}
-                      title="Start Demo"
+                      title={t("login.buttons.start_demo", "Start Demo")}
                       disabled={isConnecting}
                       onClick={() => {
                         setSelectedDeployment("Weaviate");
@@ -337,7 +370,7 @@ const LoginView: React.FC<LoginViewProps> = ({
                   <div className="flex flex-col justify-start gap-4 w-full">
                     <VerbaButton
                       Icon={HiMiniSparkles}
-                      title="Start Verba"
+                      title={t("login.buttons.start_verba", "Start Verba")}
                       onClick={() => {
                         setSelectStage(false);
                         setSelectedDeployment("Weaviate");
@@ -364,20 +397,25 @@ const LoginView: React.FC<LoginViewProps> = ({
                             name="username"
                             value={weaviateURL}
                             onChange={(e) => setWeaviateURL(e.target.value)}
-                            placeholder="Weaviate URL"
+                            placeholder={t(
+                              "login.placeholder.weaviate_url",
+                              "Weaviate URL"
+                            )}
                             className="grow bg-button-verba text-text-alt-verba hover:text-text-verba w-full"
                             autoComplete="username"
                           />
                         </label>
                         {selectedDeployment == "Custom" && (
                           <label className="input flex items-center gap-2 border-none shadow-md bg-bg-verba">
-                            <p className="text-text-alt-verba text-xs">Port</p>
+                            <p className="text-text-alt-verba text-xs">
+                              {t("login.placeholder.port_label", "Port")}
+                            </p>
                             <input
                               type="text"
                               name="Port"
                               value={port}
                               onChange={(e) => setPort(e.target.value)}
-                              placeholder="Port"
+                              placeholder={t("login.placeholder.port", "Port")}
                               className="grow bg-button-verba text-text-alt-verba hover:text-text-verba w-full"
                               autoComplete="port"
                             />
@@ -392,7 +430,10 @@ const LoginView: React.FC<LoginViewProps> = ({
                           name="current-password"
                           value={weaviateAPIKey}
                           onChange={(e) => setWeaviateAPIKey(e.target.value)}
-                          placeholder="API Key"
+                          placeholder={t(
+                            "login.placeholder.api_key",
+                            "API Key"
+                          )}
                           className="grow bg-button-verba text-text-alt-verba hover:text-text-verba w-full"
                           autoComplete="current-password"
                         />
@@ -402,7 +443,10 @@ const LoginView: React.FC<LoginViewProps> = ({
                           <div className="flex flex-col justify-start gap-2 w-full">
                             <VerbaButton
                               Icon={GrConnect}
-                              title="Connect to Weaviate"
+                              title={t(
+                                "login.buttons.connect_to_weaviate",
+                                "Connect to Weaviate"
+                              )}
                               type="submit"
                               selected={true}
                               selected_color="bg-primary-verba"
@@ -411,7 +455,7 @@ const LoginView: React.FC<LoginViewProps> = ({
                             {selectedDeployment == "Weaviate" && (
                               <VerbaButton
                                 Icon={CgWebsite}
-                                title="Register"
+                                title={t("login.buttons.register", "Register")}
                                 type="button"
                                 disabled={isConnecting}
                                 onClick={() =>
@@ -424,7 +468,7 @@ const LoginView: React.FC<LoginViewProps> = ({
                             )}
                             <VerbaButton
                               Icon={FaBackspace}
-                              title="Back"
+                              title={t("login.buttons.back", "Back")}
                               type="button"
                               text_size="text-xs"
                               icon_size={12}

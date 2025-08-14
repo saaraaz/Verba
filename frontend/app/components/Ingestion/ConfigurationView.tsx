@@ -20,6 +20,7 @@ import VerbaButton from "../Navigation/VerbaButton";
 
 import BasicSettingView from "./BasicSettingView";
 import ComponentView from "./ComponentView";
+import { useTranslation } from "@/context/TranslationContext";
 
 interface ConfigurationViewProps {
   selectedFileData: string | null;
@@ -46,12 +47,17 @@ const ConfigurationView: React.FC<ConfigurationViewProps> = ({
   setSelectedFileData,
   credentials,
 }) => {
+  const { t } = useTranslation();
+
   const [selectedSetting, setSelectedSetting] = useState<
     "Basic" | "Pipeline" | "Metadata"
   >("Basic");
 
   const applyToAll = () => {
-    addStatusMessage("Applying config to all files", "INFO");
+    addStatusMessage(
+      t("ingestion.status.apply_all", "Applying config to all files"),
+      "INFO"
+    );
     setFileMap((prevFileMap) => {
       if (selectedFileData) {
         const newRAGConfig: RAGConfig = JSON.parse(
@@ -76,7 +82,10 @@ const ConfigurationView: React.FC<ConfigurationViewProps> = ({
   };
 
   const setAsDefault = async () => {
-    addStatusMessage("Setting current config as default", "SUCCESS");
+    addStatusMessage(
+      t("ingestion.status.set_default", "Setting current config as default"),
+      "SUCCESS"
+    );
     if (selectedFileData) {
       const response = await updateRAGConfig(
         fileMap[selectedFileData].rag_config,
@@ -94,7 +103,10 @@ const ConfigurationView: React.FC<ConfigurationViewProps> = ({
   };
 
   const resetConfig = () => {
-    addStatusMessage("Resetting pipeline settings", "WARNING");
+    addStatusMessage(
+      t("ingestion.status.reset_pipeline", "Resetting pipeline settings"),
+      "WARNING"
+    );
     setFileMap((prevFileMap) => {
       if (selectedFileData && RAGConfig) {
         const newFileMap: FileMap = { ...prevFileMap };
@@ -187,7 +199,12 @@ const ConfigurationView: React.FC<ConfigurationViewProps> = ({
     ) => {
       if (!RAGConfig) return;
 
-      addStatusMessage("Saving " + selected_component + " config", "SUCCESS");
+      addStatusMessage(
+        t("ingestion.config.status.saving", "Saving {{name}} Config", {
+          name: selected_component,
+        }),
+        "SUCCESS"
+      );
 
       const newRAGConfig = JSON.parse(JSON.stringify(RAGConfig));
       newRAGConfig[component_n].selected = selected_component;
@@ -207,13 +224,16 @@ const ConfigurationView: React.FC<ConfigurationViewProps> = ({
       <div className="bg-bg-alt-verba rounded-2xl flex gap-2 p-6 items-center justify-between h-min w-full">
         <div className="flex gap-2 justify-start ">
           <InfoComponent
-            tooltip_text="Configure all import settings related to chunking, embedding, adding meta data and more. You can save made changes individually or apply them to all other files"
-            display_text="Import Config"
+            tooltip_text={t(
+              "ingestion.config.tooltip",
+              "Configure all import settings related to chunking, embedding, adding meta data and more. You can save made changes individually or apply them to all other files"
+            )}
+            display_text={t("ingestion.config.title", "Import Config")}
           />
         </div>
         <div className="flex gap-3 justify-end">
           <VerbaButton
-            title="Overview"
+            title={t("ingestion.overview", "Overview")}
             selected={selectedSetting === "Basic"}
             selected_color="bg-secondary-verba"
             onClick={() => {
@@ -223,7 +243,7 @@ const ConfigurationView: React.FC<ConfigurationViewProps> = ({
           />
 
           <VerbaButton
-            title="Config"
+            title={t("ingestion.config", "Config")}
             selected={selectedSetting === "Pipeline"}
             selected_color="bg-secondary-verba"
             onClick={() => {
@@ -287,42 +307,55 @@ const ConfigurationView: React.FC<ConfigurationViewProps> = ({
       <div className="bg-bg-alt-verba rounded-2xl flex gap-2 p-6 items-center justify-end h-min w-full">
         <div className="flex gap-3 justify-end">
           <VerbaButton
-            title="Apply to All"
+            title={t("ingestion.apply_to_all", "Apply to All")}
             onClick={openApplyAllModal}
             Icon={VscSaveAll}
           />
 
           <VerbaButton
-            title="Save Config"
+            title={t("ingestion.save_config", "Save Config")}
             onClick={openDefaultModal}
             Icon={IoSettingsSharp}
           />
 
-          <VerbaButton title="Reset" onClick={openResetModal} Icon={MdCancel} />
+          <VerbaButton
+            title={t("common.reset", "Reset")}
+            onClick={openResetModal}
+            Icon={MdCancel}
+          />
         </div>
       </div>
       <UserModalComponent
         modal_id={"apply_setting_to_all"}
-        title={"Apply Pipeline Settings"}
-        text={"Apply Pipeline Settings to all files?"}
-        triggerString="Apply"
+        title={t("ingestion.modal.apply_all.title", "Apply Pipeline Settings")}
+        text={t(
+          "ingestion.modal.apply_all.text",
+          "Apply Pipeline Settings to all files?"
+        )}
+        triggerString={t("ingestion.modal.apply_all.trigger", "Apply")}
         triggerValue={null}
         triggerAccept={applyToAll}
       />
       <UserModalComponent
         modal_id={"reset_Setting"}
-        title={"Reset Setting"}
-        text={"Reset pipeline settings of this file?"}
-        triggerString="Reset"
+        title={t("ingestion.modal.reset.title", "Reset Setting")}
+        text={t(
+          "ingestion.modal.reset.text",
+          "Reset pipeline settings of this file?"
+        )}
+        triggerString={t("ingestion.modal.reset.trigger", "Reset")}
         triggerValue={null}
         triggerAccept={resetConfig}
       />
 
       <UserModalComponent
         modal_id={"set_default_settings"}
-        title={"Set Default"}
-        text={"Set current pipeline settings as default for future files?"}
-        triggerString="Set"
+        title={t("ingestion.modal.set_default.title", "Set Default")}
+        text={t(
+          "ingestion.modal.set_default.text",
+          "Set current pipeline settings as default for future files?"
+        )}
+        triggerString={t("ingestion.modal.set_default.trigger", "Set")}
         triggerValue={null}
         triggerAccept={setAsDefault}
       />

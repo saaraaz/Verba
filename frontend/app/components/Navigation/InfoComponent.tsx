@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { FaInfo } from "react-icons/fa";
 import VerbaButton from "./VerbaButton";
+import { useTranslation } from "@/context/TranslationContext";
 
 interface InfoComponentProps {
   tooltip_text: string;
@@ -14,6 +15,7 @@ const InfoComponent: React.FC<InfoComponentProps> = ({
   display_text,
 }) => {
   const [showTooltip, setShowTooltip] = useState(false);
+  const { t } = useTranslation();
 
   return (
     <div className={`items-center gap-2 flex`}>
@@ -22,13 +24,15 @@ const InfoComponent: React.FC<InfoComponentProps> = ({
         onMouseLeave={() => setShowTooltip(false)}
         className="relative cursor-pointer flex flex-col items-center text-text-alt-verba"
       >
-        <p className="text-sm ml-3">{display_text}</p>
+        <p className="text-sm ml-3">{t(display_text, display_text)}</p>
         <div
           className={`absolute top-full left-full mt-2 z-30 p-4 bg-bg-verba text-text-alt-verba text-xs rounded-xl shadow-md w-[300px] transition-opacity duration-300 ${
             showTooltip ? "opacity-100" : "opacity-0 pointer-events-none"
           }`}
         >
-          <p className="w-full text-xs whitespace-normal">{tooltip_text}</p>
+          <p className="w-full text-xs whitespace-normal">
+            {t(tooltip_text, tooltip_text)}
+          </p>
         </div>
       </div>
     </div>

@@ -16,6 +16,7 @@ import {
 import VerbaButton from "../Navigation/VerbaButton";
 
 import { Theme } from "@/app/types";
+import { useTranslation } from "@/context/TranslationContext";
 
 interface ChatMessageProps {
   message: Message;
@@ -36,6 +37,8 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
   setSelectedDocumentScore,
   setSelectedChunkScore,
 }) => {
+  const { t } = useTranslation();
+
   const colorTable = {
     user: "bg-bg-verba",
     system: "bg-bg-alt-verba",
@@ -138,12 +141,14 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
         />
         <dialog id={"context-modal-" + message_index} className="modal">
           <div className="modal-box">
-            <h3 className="font-bold text-lg">Context</h3>
+            <h3 className="font-bold text-lg">
+              {t("chat.context.title", "Context")}
+            </h3>
             <p className="py-4">{message.context}</p>
             <div className="modal-action">
               <form method="dialog">
                 <button className="btn focus:outline-none text-text-alt-verba bg-button-verba hover:bg-button-hover-verba hover:text-text-verba border-none shadow-none">
-                  <p>Close</p>
+                  <p>{t("common.close", "Close")}</p>
                 </button>
               </form>
             </div>

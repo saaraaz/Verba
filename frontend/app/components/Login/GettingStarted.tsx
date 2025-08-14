@@ -6,6 +6,7 @@ import { FaGithub } from "react-icons/fa";
 import { FaYoutube } from "react-icons/fa";
 import { IoDocumentTextSharp } from "react-icons/io5";
 import { FaHeart } from "react-icons/fa";
+import { useTranslation } from "@/context/TranslationContext";
 
 interface GettingStartedComponentProps {
   addStatusMessage: (
@@ -19,6 +20,7 @@ const GettingStartedComponent: React.FC<GettingStartedComponentProps> = ({
 }) => {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [shouldShow, setShouldShow] = useState(false);
+  const { t } = useTranslation();
 
   useEffect(() => {
     // Check if getting_started variable exists in localStorage
@@ -42,7 +44,10 @@ const GettingStartedComponent: React.FC<GettingStartedComponentProps> = ({
     // Set getting_started to true in localStorage
     localStorage.setItem("getting_started", "true");
     setShouldShow(false);
-    addStatusMessage("Achievement unlocked: Welcome to Verba!", "SUCCESS");
+    addStatusMessage(
+      t("getting_started.success", "Achievement unlocked: Welcome to Verba!"),
+      "SUCCESS"
+    );
   };
 
   return (
@@ -52,35 +57,33 @@ const GettingStartedComponent: React.FC<GettingStartedComponentProps> = ({
           <div className="hero-content flex-row">
             <div className="text-center lg:text-left">
               <h1 className="text-2xl md:text-5xl font-bold">
-                Welcome to Verba
+                {t("getting_started.title", "Welcome to Verba")}
               </h1>
               <h2 className="text-lg md:text-2xl mt-2">
-                Your Open Source RAG App
+                {t("getting_started.subtitle", "Your Open Source RAG App")}
               </h2>
               <p className="py-6 text-sm md:text-base">
-                Verba is an open-source application designed to offer an
-                end-to-end, streamlined, and user-friendly interface for
-                Retrieval-Augmented Generation (RAG) out of the box. In just a
-                few easy steps, explore your datasets and extract insights with
-                ease, either locally with HuggingFace and Ollama or through LLM
-                providers such as Anthrophic, Cohere, and OpenAI.
+                {t(
+                  "getting_started.description1",
+                  "Verba is an open-source application designed to offer an end-to-end, streamlined, and user-friendly interface for Retrieval-Augmented Generation (RAG) out of the box. In just a few easy steps, explore your datasets and extract insights with ease, either locally with HuggingFace and Ollama or through LLM providers such as Anthrophic, Cohere, and OpenAI."
+                )}
               </p>
               <p className="py-6 text-sm md:text-base">
-                Learn more by visiting our GitHub repository, our blog post, or
-                our video on Verba. Verba is currently still in development. If
-                you have any questions or find issues, please reach out to us on
-                GitHub.
+                {t(
+                  "getting_started.description2",
+                  "Learn more by visiting our GitHub repository, our blog post, or our video on Verba. Verba is currently still in development. If you have any questions or find issues, please reach out to us on GitHub."
+                )}
               </p>
               <div className="flex flex-col md:flex-row gap-2">
                 <VerbaButton
-                  title="GitHub"
+                  title={t("getting_started.github", "GitHub")}
                   Icon={FaGithub}
                   onClick={() =>
                     window.open("https://github.com/weaviate/verba", "_blank")
                   }
                 />
                 <VerbaButton
-                  title="YouTube"
+                  title={t("getting_started.youtube", "YouTube")}
                   Icon={FaYoutube}
                   onClick={() =>
                     window.open(
@@ -90,7 +93,7 @@ const GettingStartedComponent: React.FC<GettingStartedComponentProps> = ({
                   }
                 />
                 <VerbaButton
-                  title="Blog Post"
+                  title={t("getting_started.blog", "Blog Post")}
                   Icon={IoDocumentTextSharp}
                   onClick={() =>
                     window.open(
@@ -114,10 +117,19 @@ const GettingStartedComponent: React.FC<GettingStartedComponentProps> = ({
         <div className="modal-action mt-6 justify-center md:justify-end">
           <form method="dialog">
             <VerbaButton
-              title="Let's get started"
+              title={t("getting_started.start", "Let's get started")}
               type="submit"
               selected={true}
-              onClick={handleGetStarted}
+              onClick={() => {
+                addStatusMessage(
+                  t(
+                    "getting_started.success",
+                    "Achievement unlocked: Welcome to Verba!"
+                  ),
+                  "SUCCESS"
+                );
+                handleGetStarted();
+              }}
               selected_color="bg-primary-verba"
               Icon={FaHeart}
             />

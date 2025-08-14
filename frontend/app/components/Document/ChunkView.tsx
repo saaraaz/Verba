@@ -15,6 +15,7 @@ import { fetch_chunks } from "@/app/api";
 import { Credentials } from "@/app/types";
 
 import VerbaButton from "../Navigation/VerbaButton";
+import { useTranslation } from "@/context/TranslationContext";
 
 interface ChunkViewProps {
   selectedDocument: string | null;
@@ -32,6 +33,7 @@ const ChunkView: React.FC<ChunkViewProps> = ({
   const [page, setPage] = useState(1);
   const [currentChunkIndex, setCurrentChunkIndex] = useState(0);
   const [isPreviousDisabled, setIsPreviousDisabled] = useState(true);
+  const { t } = useTranslation();
 
   useEffect(() => {
     fetchChunks(page);
@@ -141,7 +143,9 @@ const ChunkView: React.FC<ChunkViewProps> = ({
                 <div className="flex gap-2 items-center p-3 bg-secondary-verba rounded-full w-fit">
                   <IoNewspaper size={12} />
                   <p className="text-xs flex text-text-verba">
-                    Chunk {chunks[currentChunkIndex].chunk_id}
+                    {t("document.chunk.label", "Chunk {{id}}", {
+                      id: chunks[currentChunkIndex].chunk_id,
+                    })}
                   </p>
                 </div>
               </div>
@@ -182,7 +186,7 @@ const ChunkView: React.FC<ChunkViewProps> = ({
           {chunks.length > 1 && (
             <div className="flex justify-center items-center gap-2 p-3 bg-bg-alt-verba">
               <VerbaButton
-                title={"Previous Chunk"}
+                title={t("document.button.previous_chunk", "Previous Chunk")}
                 onClick={previousChunk}
                 className="btn-sm min-w-min max-w-[200px]"
                 text_class_name="text-xs"
@@ -190,7 +194,7 @@ const ChunkView: React.FC<ChunkViewProps> = ({
                 Icon={FaArrowAltCircleLeft}
               />
               <VerbaButton
-                title={"Next Chunk"}
+                title={t("document.button.next_chunk", "Next Chunk")}
                 onClick={nextChunk}
                 className="btn-sm min-w-min max-w-[200px]"
                 text_class_name="text-xs"

@@ -15,6 +15,7 @@ import VerbaButton from "./VerbaButton";
 
 import NavbarButton from "./NavButton";
 import { getGitHubStars } from "./util";
+import { useTranslation } from "@/context/TranslationContext";
 
 interface NavbarProps {
   imageSrc: string;
@@ -44,6 +45,7 @@ const Navbar: React.FC<NavbarProps> = ({
   production,
 }) => {
   const [gitHubStars, setGitHubStars] = useState("0");
+  const { t } = useTranslation();
 
   useEffect(() => {
     // Declare an asynchronous function inside the useEffect
@@ -84,12 +86,14 @@ const Navbar: React.FC<NavbarProps> = ({
           className="flex rounded-lg w-[60px] object-contain [filter:drop-shadow(0_4px_3px_rgb(0_0_0_/0.07))_drop-shadow(0_2px_2px_rgb(0_0_0_/0.06))]"
         />
         <div className="flex flex-col">
-          <p className="text-xl font-bold text-text-verba">{title}</p>
-          <p className="text-sm  text-text-alt-verba font-light">{subtitle}</p>
+          <p className="text-xl font-bold text-text-verba">{t(title, title)}</p>
+          <p className="text-sm  text-text-alt-verba font-light">
+            {t(subtitle, subtitle)}
+          </p>
         </div>
         <div className="flex md:hidden flex-col items-center gap-3 justify-between">
           <div className="dropdown dropdown-hover">
-            <VerbaButton Icon={TiThMenu} title="Menu" />
+            <VerbaButton Icon={TiThMenu} title={t("navigation.menu", "Menu")} />
             <ul
               tabIndex={0}
               className="dropdown-content dropdown-left z-[1] menu p-2 shadow bg-base-100 rounded-box w-52"
@@ -102,7 +106,7 @@ const Navbar: React.FC<NavbarProps> = ({
                     closeOnClick();
                   }}
                 >
-                  Chat
+                  {t("navigation.chat", "Chat")}
                 </a>
               </li>
               <li key={"Menu Button2"}>
@@ -113,7 +117,7 @@ const Navbar: React.FC<NavbarProps> = ({
                     closeOnClick();
                   }}
                 >
-                  Documents
+                  {t("navigation.documents", "Documents")}
                 </a>
               </li>
               {production != "Demo" && (
@@ -125,7 +129,7 @@ const Navbar: React.FC<NavbarProps> = ({
                       closeOnClick();
                     }}
                   >
-                    Import Data
+                    {t("navigation.import_data", "Import Data")}
                   </a>
                 </li>
               )}
@@ -138,7 +142,7 @@ const Navbar: React.FC<NavbarProps> = ({
                       closeOnClick();
                     }}
                   >
-                    Settings
+                    {t("navigation.settings", "Settings")}
                   </a>
                 </li>
               )}
@@ -153,7 +157,7 @@ const Navbar: React.FC<NavbarProps> = ({
           <NavbarButton
             hide={false}
             Icon={IoChatbubbleSharp}
-            title="Chat"
+            title={t("navigation.chat", "Chat")}
             currentPage={currentPage}
             setCurrentPage={setCurrentPage}
             setPage="CHAT"
@@ -162,7 +166,7 @@ const Navbar: React.FC<NavbarProps> = ({
             <NavbarButton
               hide={false}
               Icon={IoMdAddCircle}
-              title="Import Data"
+              title={t("navigation.import_data", "Import Data")}
               currentPage={currentPage}
               setCurrentPage={setCurrentPage}
               setPage="ADD"
@@ -171,7 +175,7 @@ const Navbar: React.FC<NavbarProps> = ({
           <NavbarButton
             hide={false}
             Icon={IoDocumentSharp}
-            title="Documents"
+            title={t("navigation.documents", "Documents")}
             currentPage={currentPage}
             setCurrentPage={setCurrentPage}
             setPage="DOCUMENTS"
@@ -180,7 +184,7 @@ const Navbar: React.FC<NavbarProps> = ({
             <NavbarButton
               hide={false}
               Icon={IoSettingsSharp}
-              title="Settings"
+              title={t("navigation.settings", "Settings")}
               currentPage={currentPage}
               setCurrentPage={setCurrentPage}
               setPage="SETTINGS"
