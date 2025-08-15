@@ -5,3 +5,38 @@
 .react-colorful {
   height: 100px;
 }
+
+/* Keep overall UI RTL when FA is active */
+html[dir="rtl"] {
+  direction: rtl;
+}
+
+/* Let each text block auto‑detect its own direction.
+   This stops pure‑English lines (e.g., backend strings/Markdown)
+   from being forced RTL on an RTL page, while Persian stays RTL. */
+html[dir="rtl"]
+  body
+  :where(
+    p,
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    li,
+    blockquote,
+    pre,
+    code,
+    figcaption,
+    caption,
+    th,
+    td
+  ) {
+  unicode-bidi: plaintext;
+}
+
+/* ReactMarkdown / Tailwind Typography blocks */
+html[dir="rtl"] body :where(.prose) * {
+  unicode-bidi: plaintext;
+}

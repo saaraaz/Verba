@@ -4,18 +4,18 @@ import en from "../locales/en.json";
 import fa from "../locales/fa.json";
 
 type SupportedLang = "en" | "fa";
-type Translations = Record<string, any>;
+type Translations = Record<string, string>;
 
 const translations: Record<SupportedLang, Translations> = {
-  en,
-  fa,
+  en: en as Translations,
+  fa: fa as Translations,
 };
 
 function detectInitialLanguage(): SupportedLang {
   // Prefer saved language if we're on the client
   if (typeof window !== "undefined") {
     const saved = localStorage.getItem("verba_lang");
-    if (saved === "fa" || saved === "en") return saved;
+    if (saved === "fa" || saved === "en") return saved as SupportedLang;
 
     // Fallback to browser language
     const navLang =
@@ -51,27 +51,47 @@ export const TranslationProvider: React.FC<React.PropsWithChildren<{}>> = ({
     detectInitialLanguage()
   );
 
-  // Persist choice only; do NOT change <html dir> (keeps layout as-is)
+  // Persist choice
   useEffect(() => {
     if (typeof window !== "undefined") {
       try {
         localStorage.setItem("verba_lang", language);
       } catch {
-        // ignore storage errors
+        /* ignore storage errors */
       }
     }
   }, [language]);
 
-  const t: TranslationContextType["t"] = (key, fallback, vars) => {
-    const template = translations[language][key] || fallback || key;
-    if (!vars) return template;
+  // Set document direction & language attribute
+  useEffect(() => {
+    if (typeof document !== "undefined") {
+      const dir = language === "fa" ? "rtl" : "ltr";
+      document.documentElement.setAttribute("dir", dir);
+      document.documentElement.setAttribute("lang", language);
+    }
+  }, [language]);
 
-    return Object.entries(vars).reduce((result, [varName, value]) => {
-      return result.replace(
-        new RegExp(`{{\\s*${varName}\\s*}}`, "g"),
-        String(value)
-      );
-    }, template);
+  // Replace {{var}} placeholders with provided values
+  function interpolateTemplate(
+    template: string,
+    variables?: Record<string, string | number>
+  ): string {
+    if (!variables) return template;
+
+    let result = template;
+    for (const [name, value] of Object.entries(variables)) {
+      const placeholder = new RegExp(`{{\\s*${name}\\s*}}`, "g");
+      result = result.replace(placeholder, String(value));
+    }
+    return result;
+  }
+
+  // Translate a key, falling back to the provided fallback or the key itself
+  const t: TranslationContextType["t"] = (key, fallback, vars) => {
+    const catalog = translations[language] ?? ({} as Translations);
+    const raw = catalog[key] ?? fallback ?? key;
+    const template = typeof raw === "string" ? raw : String(raw);
+    return interpolateTemplate(template, vars);
   };
 
   return (
